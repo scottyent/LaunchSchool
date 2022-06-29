@@ -47,7 +47,7 @@ loop do
   prompt "What is the APR (annual percentage rate)?"
   interest_rate = gets.chomp
   interest_rate = clean_and_validate(interest_rate)
-  interest_rate = (interest_rate * 0.01) / 12
+  interest_rate = (interest_rate / 100) / 12
 
   if interest_rate
     break
