@@ -13,7 +13,7 @@ def abbreviation_to_word(abbreviation)
   end
 end
 
-def display_line_break()
+def display_line_break
   puts "----------------"
 end
 
@@ -48,10 +48,10 @@ loop do
   choice = ''
   loop do
     prompt("Choose one: #{VALID_CHOICES.join(', ')}")
-    choice = gets().chomp()
+    choice = gets().chomp().downcase()
 
-    break if VALID_CHOICES.include?(choice.downcase) || ABBREV_CHOICES.include?(choice.downcase)
-    if choice.downcase == 's'
+    break if VALID_CHOICES.include?(choice) || ABBREV_CHOICES.include?(choice)
+    if choice == 's'
       prompt("Both Scissors and Spock start with S.")
     else
       prompt("That's not a valid answer.")
@@ -64,8 +64,9 @@ loop do
   prompt("You chose: #{choice}, computer chose: #{computer_choice}")
 
   display_results(choice, computer_choice)
+  sleep(1)
 
-  # Logic to increment the score, but inside the body due to issues with scope inside methods
+  # Increment the score where score variables are accessible
   if win?(choice, computer_choice)
     wins[:player] += 1
   elsif win?(computer_choice, choice)
@@ -79,6 +80,7 @@ loop do
   play_again = gets().chomp()
   break unless play_again.downcase.start_with?('y')
 end
+
 prompt("Final result")
 display_line_break()
 display_games_won(wins[:player], wins[:computer])
