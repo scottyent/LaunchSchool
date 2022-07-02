@@ -11,6 +11,7 @@ p bar(foo)
 
 
 =begin
+test
 bar will call foo, which has a default parameter of no, but returns yes, so it will pass yes
 into bar. So bar will return "no" since the ternary will evaluate to false since the param is not equal to no
 
