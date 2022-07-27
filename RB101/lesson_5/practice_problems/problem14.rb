@@ -17,3 +17,9 @@ result = hsh.values.map do |hash|
 end
 
 p result == test_result
+
+[['a', 'b'], ['c', 'd'], ['e', 'f']].map do |sub_arr|
+  sub_arr.map do |letter|
+    letter.upcase
+  end
+end
