@@ -20,16 +20,21 @@ def century(year)
   year = year.to_s
   year_end = year[-2, 2]
   year_beginning = year[-year.size, year.size - 2]
+  p year_beginning
 
   if year_end == '00'
     century = year_beginning
   else
     century = (year_beginning.to_i + 1).to_s
+    p century
   end
 
   last_digit = century[-1].to_i
+  last_two_digits_century = century[-2, 2].to_i
 
-  if (1..3).include?(last_digit)
+  if (11..13).include?(last_two_digits_century) || !(1..3).include?(last_digit)
+    century << 'th'
+  else
     ending = case last_digit
     when 1
       'st'
@@ -38,17 +43,10 @@ def century(year)
     when 3
       'rd'
     end
+
     century << ending
-  else
-    century << 'th'
   end
 
-  if (11..13).include?(year_end.to_i)
-    century = century[-century.size, century.size - 2]
-    century << 'th'
-  end
-
-  puts century
   century
 end
 # Tests
