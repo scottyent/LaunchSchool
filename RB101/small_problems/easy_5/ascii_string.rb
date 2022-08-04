@@ -16,7 +16,6 @@ require 'pry-byebug'
 def ascii_value(string)
   ascii_sum = 0
   string.each_char { |char| ascii_sum += char.ord }
-  binding.pry
   ascii_sum
 end
 
