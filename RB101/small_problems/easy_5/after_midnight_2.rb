@@ -26,8 +26,7 @@ end
 def before_midnight(time_string)
   hours, minutes = time_string.split(":").map { |num_string| num_string.to_i }
   hours = 0 if hours == 24
-  minutes += hours * MINUTES_PER_HOUR
-  minutes == 0 ? 0 : (1440 - minutes)
+  minutes == 0 ? 0 : (1440 - after_midnight(time_string))
 end
 
 # Tests

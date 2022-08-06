@@ -28,4 +28,30 @@
 # 8. Play again?
 # 9. If yes, go to #1
 # 10. Good bye!
+require 'pry'
+require 'pry-byebug'
 
+def display_board(board_state)
+  puts ""
+  puts "     |     |"
+  puts "  #{board_state[1]}  |  #{board_state[2]}  |  #{board_state[3]}"
+  puts "     |     |"
+  puts "-----+-----+-----"
+  puts "     |     |"
+  puts "  #{board_state[4]}  |  #{board_state[5]}  |  #{board_state[6]}"
+  puts "     |     |"
+  puts "-----+-----+-----"
+  puts "     |     |"
+  puts "  #{board_state[7]}  |  #{board_state[8]}  |  #{board_state[9]}"
+  puts "     |     |"
+  puts ""
+end
+
+def initialize_board()
+  new_board = {}
+  (1..9).each { |num| new_board[num] = ' ' }
+  new_board
+end
+
+board = initialize_board
+display_board(board)
