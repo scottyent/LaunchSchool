@@ -32,8 +32,8 @@ require 'pry'
 require 'pry-byebug'
 
 DEFAULT_SPACE_VALUE = " "
-PLAYER_MARKER = 'X'
-COMPUTER_MARKER = 'O'
+PLAYER_MARKER = "\u{274C}"
+COMPUTER_MARKER = "\u{2B55}"
 
 
 def prompt(message)
@@ -139,7 +139,7 @@ loop do
 
   prompt "Do you want to play again? (y/n)"
   answer = gets.chomp.downcase
-  break if answer == 'n'
+  break if answer.start_with?('n')
 end
 
 prompt "Thanks for playing! Have a spectacular day."
