@@ -90,39 +90,56 @@ end
 
 def detect_winner(board)
   # I've written this with my logic, but will update to his logic once I watch the video
-  winning_conditions = [[1, 2, 3], [4, 5, 6], [7, 8, 9] ,[1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
-  winning_conditions.each do |row_array|
-    row_status = []
-    row_array.each do |square_number|
-      row_status << board[square_number]
+  # Wow, his logic is actually the same as mine! But it's brute force.
+  # He had a different way to do comparison, but I think my way is more clear
+  winning_conditions = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
+                       [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
+                       [[1, 5, 9], [3, 5, 7]] # Diagonals
+
+  winning_conditions.each do |line_array|
+    line_state = []
+    line_array.each do |square_number|
+      line_state << board[square_number]
     end
 
-    if row_status.eql?(["X", "X", "X"])
+    if line_state.eql?([PLAYER_MARKER, PLAYER_MARKER, PLAYER_MARKER])
      return "Player"
-    elsif row_status.eql?(["O", "O", "O"])
+    elsif line_state.eql?([COMPUTER_MARKER, COMPUTER_MARKER, COMPUTER_MARKER])
      return "Computer"
     end
-
   end
 
   false
 end
 
 def someone_won?(board)
-  detect_winner(board)
+  !!detect_winner(board)
 end
 
-board = initialize_board
-display_board(board)
 loop do
-  player_turn!(board)
-  computer_turn!(board)
+  board = initialize_board
   display_board(board)
-  break if someone_won?(board) || board_full?(board)
+  loop do
+    display_board(board)
+
+    player_turn!(board)
+    break if someone_won?(board) || board_full?(board)
+
+    computer_turn!(board)
+    break if someone_won?(board) || board_full?(board)
+  end
+
+  display_board(board)
+
+  if someone_won?(board)
+    prompt "#{detect_winner(board)} won!"
+  else
+    prompt "It's a tie."
+  end
+
+  prompt "Do you want to play again? (y/n)"
+  answer = gets.chomp.downcase
+  break if answer == 'n'
 end
 
-if someone_won?(board)
-  prompt "#{detect_winner(board)} won!"
-else
-  prompt "It's a tie."
-end
+prompt "Thanks for playing! Have a spectacular day."
