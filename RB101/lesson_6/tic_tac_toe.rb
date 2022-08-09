@@ -83,15 +83,12 @@ end
 def joinor(choices_array, delineator = ", ", end_word = "or")
   case choices_array.size
   when 1
-    return choices_array[0].to_s
+    choices_array[0].to_s
   when 2
-    return "#{choices_array[0]} #{end_word} #{choices_array[1]}"
+    "#{choices_array[0]} #{end_word} #{choices_array[1]}"
   else
-    full_choices = ''
-    trailing_element = choices_array.pop
-    full_choices << choices_array.join(delineator)
-    full_choices << "#{delineator}#{end_word} #{trailing_element}"
-    return full_choices
+    choices_array[-1] = "#{end_word} #{choices_array.last}"
+    choices_array.join(delineator)
   end
 end
 
