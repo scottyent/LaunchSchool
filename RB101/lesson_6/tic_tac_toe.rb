@@ -1,12 +1,17 @@
 # Description of the game in my own words:
-# Tic Tac Toe is a game that we will create with one player and a computer player. The point of the game is to get
+# Tic Tac Toe is a game that we will create with one player
+# and a computer player. The point of the game is to get
 # Three of your symbols in a row within a 3 x 3 grid
-# Players alternate turns until one is able to have 3 in a row, or there are no more playable moves
+# Players alternate turns until one is able to have 3 in a row,
+# or there are no more playable moves
 
 # Super similar to their description:
-# Tic Tac Toe is a 2 player game played on a 3x3 board. Each player takes a turn and
-# marks a square on the board. First player to reach 3 squares in a row, including diagonals,
-# wins. If all 9 squares are marked and no player has 3 squares in a row, then the game is a tie.
+# Tic Tac Toe is a 2 player game played on a 3x3 board.
+# Each player takes a turn and
+# marks a square on the board. First player to reach 3
+# squares in a row, including diagonals,
+# wins. If all 9 squares are marked and no player has 3
+# squares in a row, then the game is a tie.
 
 # Breaking it down to build a flow chart
 # Display the board
@@ -28,18 +33,25 @@
 # 8. Play again?
 # 9. If yes, go to #1
 # 10. Good bye!
+
+# Additional Assignments:
+# write a joinor function that allows you to insert an or/and
+# at the end of the list of joined available squares
 require 'pry'
 require 'pry-byebug'
 
 DEFAULT_SPACE_VALUE = " "
-PLAYER_MARKER = "\u{274C}"
-COMPUTER_MARKER = "\u{2B55}"
-
+PLAYER_MARKER = "X"
+COMPUTER_MARKER = "O"
+WINNING_CONDITIONS = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
+                     [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
+                     [[1, 5, 9], [3, 5, 7]] # Diagonals
 
 def prompt(message)
   puts "=> #{message}"
 end
 
+# rubocop:disable Metrics/AbcSize
 def display_board(board_state)
   system 'clear'
   puts ""
@@ -56,21 +68,37 @@ def display_board(board_state)
   puts "     |     |"
   puts ""
 end
+# rubocop:enable Metrics/AbcSize
 
-def initialize_board()
+def initialize_board
   new_board = {}
   (1..9).each { |num| new_board[num] = DEFAULT_SPACE_VALUE }
   new_board
 end
 
 def empty_squares(board)
-  board.keys.select{ |num| board[num] == DEFAULT_SPACE_VALUE }
+  board.keys.select { |num| board[num] == DEFAULT_SPACE_VALUE }
+end
+
+def joinor(choices_array, delineator = ", ", end_word = "or")
+  case choices_array.size
+  when 1
+    return choices_array[0].to_s
+  when 2
+    return "#{choices_array[0]} #{end_word} #{choices_array[1]}"
+  else
+    full_choices = ''
+    trailing_element = choices_array.pop
+    full_choices << choices_array.join(delineator)
+    full_choices << "#{delineator}#{end_word} #{trailing_element}"
+    return full_choices
+  end
 end
 
 def player_turn!(board)
   square = ''
   loop do
-    prompt "Choose a square (#{empty_squares(board).join(", ")}):"
+    prompt "Choose a square (#{joinor(empty_squares(board))}):"
     square = gets.chomp.to_i
     break if empty_squares(board).include?(square)
     prompt "Either that spot is taken, or your entry is invalid."
@@ -89,23 +117,15 @@ def board_full?(board)
 end
 
 def detect_winner(board)
-  # I've written this with my logic, but will update to his logic once I watch the video
-  # Wow, his logic is actually the same as mine! But it's brute force.
-  # He had a different way to do comparison, but I think my way is more clear
-  winning_conditions = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
-                       [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
-                       [[1, 5, 9], [3, 5, 7]] # Diagonals
-
-  winning_conditions.each do |line_array|
+  WINNING_CONDITIONS.each do |line_array|
     line_state = []
-    line_array.each do |square_number|
-      line_state << board[square_number]
-    end
+    line_array.each { |square_number| line_state << board[square_number] }
 
-    if line_state.eql?([PLAYER_MARKER, PLAYER_MARKER, PLAYER_MARKER])
-     return "Player"
-    elsif line_state.eql?([COMPUTER_MARKER, COMPUTER_MARKER, COMPUTER_MARKER])
-     return "Computer"
+    case line_state
+    when [PLAYER_MARKER, PLAYER_MARKER, PLAYER_MARKER]
+      return "Player"
+    when [COMPUTER_MARKER, COMPUTER_MARKER, COMPUTER_MARKER]
+      return "Computer"
     end
   end
 
