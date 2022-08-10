@@ -105,8 +105,28 @@ def player_turn!(board)
 end
 
 def computer_turn!(board)
-  computer_square = empty_squares(board).sample
+  if find_at_risk_square(board)
+    computer_square = find_at_risk_square(board)
+  else
+    computer_square = empty_squares(board).sample
+  end
+  # binding.pry
   board[computer_square] = COMPUTER_MARKER
+end
+
+def find_at_risk_square(board)
+  defensive_move = false
+
+  WINNING_CONDITIONS.each do |line_array|
+    line_state = []
+    line_array.each { |square_number| line_state << board[square_number] }
+    check_line = line_state.join.gsub(" ", "")
+    if check_line == "#{PLAYER_MARKER}#{PLAYER_MARKER}"
+      defensive_move = line_array[line_state.find_index(" ")]
+    end
+  end
+
+  defensive_move
 end
 
 def board_full?(board)
@@ -133,12 +153,24 @@ def someone_won?(board)
   !!detect_winner(board)
 end
 
+def display_games_score(scoreboard)
+  prompt "Computer: #{scoreboard[:computer]}"
+  prompt "Player: #{scoreboard[:player]}"
+end
+
+def update_games_score(winner, scores)
+  scores[winner] += 1
+end
+
+overall_scoreboard = { player: 0, computer: 5 }
+
 loop do
   board = initialize_board
+
   display_board(board)
   loop do
     display_board(board)
-
+    find_at_risk_square(board)
     player_turn!(board)
     break if someone_won?(board) || board_full?(board)
 
@@ -149,14 +181,27 @@ loop do
   display_board(board)
 
   if someone_won?(board)
-    prompt "#{detect_winner(board)} won!"
+    winner = detect_winner(board)
+    update_games_score(winner.downcase.to_sym, overall_scoreboard)
+    prompt "#{winner} won!"
   else
     prompt "It's a tie."
   end
 
-  prompt "Do you want to play again? (y/n)"
-  answer = gets.chomp.downcase
-  break if answer.start_with?('n')
+  game_over = true if overall_scoreboard.values.include?(5)
+
+  if !game_over
+    display_games_score(overall_scoreboard)
+    prompt "Do you want to play again? (y/n)"
+    answer = gets.chomp.downcase
+    break if answer.start_with?('n')
+  else
+    prompt "#{winner} is the first to 5 games and wins the championship!"
+    break
+  end
 end
 
-prompt "Thanks for playing! Have a spectacular day."
+puts "----------------------"
+prompt "Thanks for playing!"
+prompt "Final score: "
+display_games_score(overall_scoreboard)
