@@ -105,28 +105,55 @@ def player_turn!(board)
 end
 
 def computer_turn!(board)
-  if find_at_risk_square(board)
-    computer_square = find_at_risk_square(board)
-  else
-    computer_square = empty_squares(board).sample
-  end
-  # binding.pry
+  optimal_move = find_optimal_move(board)
+  computer_square = optimal_move ? optimal_move : empty_squares(board).sample
+
   board[computer_square] = COMPUTER_MARKER
 end
 
-def find_at_risk_square(board)
+def find_optimal_move(board)
+  optimal_move = false
+
+  defense = find_defensive_move(board)
+  offense = find_offensive_move(board)
+
+  if defense
+    optimal_move = defense
+  elsif offense
+    optimal_move = offense
+  end
+
+  optimal_move
+end
+
+def find_defensive_move(board)
   defensive_move = false
 
   WINNING_CONDITIONS.each do |line_array|
     line_state = []
     line_array.each { |square_number| line_state << board[square_number] }
-    check_line = line_state.join.gsub(" ", "")
-    if check_line == "#{PLAYER_MARKER}#{PLAYER_MARKER}"
-      defensive_move = line_array[line_state.find_index(" ")]
+    check_line = line_state.join.gsub(DEFAULT_SPACE_VALUE, "")
+    if check_line == "#{PLAYER_MARKER * 2}"
+      defensive_move = line_array[line_state.find_index(DEFAULT_SPACE_VALUE)]
     end
   end
 
   defensive_move
+end
+
+def find_offensive_move(board)
+  offensive_move = false
+
+  WINNING_CONDITIONS.each do |line_array|
+    line_state = []
+    line_array.each { |square_number| line_state << board[square_number] }
+    check_line = line_state.join.gsub(DEFAULT_SPACE_VALUE, "")
+    if check_line == "#{COMPUTER_MARKER * 2}"
+      offensive_move = line_array[line_state.find_index(DEFAULT_SPACE_VALUE)]
+    end
+  end
+
+  offensive_move
 end
 
 def board_full?(board)
@@ -162,7 +189,7 @@ def update_games_score(winner, scores)
   scores[winner] += 1
 end
 
-overall_scoreboard = { player: 0, computer: 5 }
+overall_scoreboard = { player: 0, computer: 0 }
 
 loop do
   board = initialize_board
@@ -170,7 +197,7 @@ loop do
   display_board(board)
   loop do
     display_board(board)
-    find_at_risk_square(board)
+
     player_turn!(board)
     break if someone_won?(board) || board_full?(board)
 
