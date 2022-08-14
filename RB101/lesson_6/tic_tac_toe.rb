@@ -40,6 +40,7 @@
 require 'pry'
 require 'pry-byebug'
 
+
 DEFAULT_SPACE_VALUE = " "
 PLAYER_MARKER = "X"
 COMPUTER_MARKER = "O"
@@ -117,10 +118,12 @@ def find_optimal_move(board)
   defense = find_defensive_move(board)
   offense = find_offensive_move(board)
 
-  if defense
-    optimal_move = defense
-  elsif offense
+  if offense
     optimal_move = offense
+  elsif defense
+    optimal_move = defense
+  elsif board[5] == DEFAULT_SPACE_VALUE
+    optimal_move = 5
   end
 
   optimal_move
@@ -168,7 +171,7 @@ def detect_winner(board)
     case line_state
     when [PLAYER_MARKER, PLAYER_MARKER, PLAYER_MARKER]
       return "Player"
-    when [COMPUTER_MARKER, COMPUTER_MARKER, COMPUTER_MARKER]
+    when [COMPUTER_MARKER, COMPUTER_MARKER , COMPUTER_MARKER]
       return "Computer"
     end
   end
@@ -189,7 +192,20 @@ def update_games_score(winner, scores)
   scores[winner] += 1
 end
 
+def who_goes_first()
+  puts "Who should go first? Computer, Player, or Random?"
+  order = gets.chomp.downcase
+  if order.start_with?('r')
+    order = (['computer', 'player']).sample
+  end
+
+  order
+end
+
 overall_scoreboard = { player: 0, computer: 0 }
+
+first_player = who_goes_first
+binding.pry
 
 loop do
   board = initialize_board
@@ -198,11 +214,20 @@ loop do
   loop do
     display_board(board)
 
-    player_turn!(board)
-    break if someone_won?(board) || board_full?(board)
+    if first_player.start_with?('c')
+      computer_turn!(board)
+      break if someone_won?(board) || board_full?(board)
+      display_board(board)
 
-    computer_turn!(board)
-    break if someone_won?(board) || board_full?(board)
+      player_turn!(board)
+      break if someone_won?(board) || board_full?(board)
+    else
+      player_turn!(board)
+      break if someone_won?(board) || board_full?(board)
+
+      computer_turn!(board)
+      break if someone_won?(board) || board_full?(board)
+    end
   end
 
   display_board(board)

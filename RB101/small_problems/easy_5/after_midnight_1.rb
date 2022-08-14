@@ -25,10 +25,10 @@ def time_of_day(minutes)
   while hours >= 24
     hours -= 24
   end
+
   negative && hours != 0 ? hours = 24 - hours : hours = 0 + hours
 
-  time = "%02d:%02d" % [hours, minutes]
-
+  "%02d:%02d" % [hours, minutes]
 end
 
 # Tests
