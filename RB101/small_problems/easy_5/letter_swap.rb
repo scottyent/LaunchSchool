@@ -5,9 +5,10 @@
 # the new string has to have the same space delineated format
 
 # Algo
-# Split the input into an array
-# Iterate through each word, and make the changes
-# Use map to create a new array with fixed words
+# Split the input into an array :DONE
+# Iterate through each word, and make the changes :DONE
+# Use map to create a new array with fixed words :DONE
+# Learned along the way: account for single letter words :DONE
 # Join the array into a sentence with spaces between
 # return the result
 
