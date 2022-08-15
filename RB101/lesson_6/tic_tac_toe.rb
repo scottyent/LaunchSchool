@@ -201,37 +201,39 @@ def who_goes_first()
   order
 end
 
+def place_piece!(board, current_player)
+ current_player.start_with?('c')? computer_turn!(board) : player_turn!(board)
+end
+
+def alternate_player(current_player)
+  return current_player.start_with?('c') ? "player" : "computer"
+end
+
+
 overall_scoreboard = { player: 0, computer: 0 }
 
 first_player = who_goes_first
 
+if first_player.start_with?('c')
+  PLAYER_MARKER = "O"
+  COMPUTER_MARKER = "X"
+else
+  PLAYER_MARKER = "X"
+  COMPUTER_MARKER = "O"
+end
+
 loop do
   board = initialize_board
 
+  current_player = first_player
   display_board(board)
   loop do
     display_board(board)
 
-    if first_player.start_with?('c')
-      PLAYER_MARKER = "O"
-      COMPUTER_MARKER = "X"
-      computer_turn!(board)
-      break if someone_won?(board) || board_full?(board)
-      display_board(board)
-
-      player_turn!(board)
-      break if someone_won?(board) || board_full?(board)
-    else
-      PLAYER = "X"
-      COMPUTER = "O"
-      player_turn!(board)
-      break if someone_won?(board) || board_full?(board)
-
-      computer_turn!(board)
-      break if someone_won?(board) || board_full?(board)
-    end
+    place_piece!(board, current_player)
+    current_player = alternate_player(current_player)
+    break if someone_won?(board) || board_full?(board)
   end
-
   display_board(board)
 
   if someone_won?(board)
