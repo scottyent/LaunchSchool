@@ -41,9 +41,8 @@ require 'pry'
 require 'pry-byebug'
 
 
+# Player/Computer Marker Constants assigned in main game play body
 DEFAULT_SPACE_VALUE = " "
-PLAYER_MARKER = "X"
-COMPUTER_MARKER = "O"
 WINNING_CONDITIONS = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                      [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
                      [[1, 5, 9], [3, 5, 7]] # Diagonals
@@ -205,7 +204,6 @@ end
 overall_scoreboard = { player: 0, computer: 0 }
 
 first_player = who_goes_first
-binding.pry
 
 loop do
   board = initialize_board
@@ -215,6 +213,8 @@ loop do
     display_board(board)
 
     if first_player.start_with?('c')
+      PLAYER_MARKER = "O"
+      COMPUTER_MARKER = "X"
       computer_turn!(board)
       break if someone_won?(board) || board_full?(board)
       display_board(board)
@@ -222,6 +222,8 @@ loop do
       player_turn!(board)
       break if someone_won?(board) || board_full?(board)
     else
+      PLAYER = "X"
+      COMPUTER = "O"
       player_turn!(board)
       break if someone_won?(board) || board_full?(board)
 
