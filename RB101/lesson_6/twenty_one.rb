@@ -43,7 +43,12 @@ end
 def deal_cards(full_deck)
   card_hands = { player: [], dealer: []}
   card_hands.each do |person, hand|
-    2.times { |_| hand << CARD_VALUES.sample }
+    2.times do |_|
+      card = full_deck.sample
+      hand << card
+      index = full_deck.find_index(card)
+      full_deck.delete_at(index)
+    end
   end
 
   card_hands
@@ -66,9 +71,7 @@ def ace_correction(hand, score)
   score
 end
 
-def calculate_hand(current_hands)
-  scores = { player: [], dealer: []}
-
+def calculate_hand(current_hands, scores)
   current_hands.each do |player, hand|
     has_ace = true if hand.include?('Ace')
 
@@ -91,9 +94,10 @@ def calculate_hand(current_hands)
   scores
 end
 
-
+current_scores = { player: [], dealer: []}
 deck = initialize_deck
 hands = deal_cards(deck)
 p hands
-p calculate_hand(hands)
+p calculate_hand(hands, current_scores)
+
 
