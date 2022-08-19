@@ -17,22 +17,32 @@
 require 'pry'
 require 'pry-byebug'
 
+# def crunch(double_string)
+#   new_string = ''
+#   last_letter = ''
+
+#   double_string.each_char do |letter|
+#     # binding.pry
+#     if letter == last_letter
+#       next
+#     else
+#       new_string << letter
+#     end
+
+#     last_letter = letter
+#   end
+
+#   new_string
+# end
+
+# Attempt with regular expressions
+
 def crunch(double_string)
-  new_string = ''
-  last_letter = ''
-
   double_string.each_char do |letter|
-    # binding.pry
-    if letter == last_letter
-      next
-    else
-      new_string << letter
-    end
-
-    last_letter = letter
+    double_string.gsub!(/#{letter}{2,}/, letter)
   end
 
-  new_string
+  double_string
 end
 
 # Test Cases
