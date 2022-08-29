@@ -92,51 +92,76 @@ def over_twenty_one?(scores, person)
   scores[person].sum > 21
 end
 
-def blackjack?(scores, person)
-  scores[person].sum == 21
+def blackjack!(scores, blackjack)
+  scores.each do |person, score|
+    if scores[person].sum == 21
+      blackjack[person] = true
+    end
+  end
 end
 
-# Starts the game at zero with a fresh deck and deals two cards to the player and the dealer
-deck = initialize_deck
-hands = deal_cards(deck)
-current_scores = {}
+def display_blackjack_winner(blackjack_record)
+  if blackjack_record.values.count(true) == 2
+    "It's a tie. Both players got blackjack."
+  elsif blackjack_record[:player] == 21
+    "Congrats! You got Blackjack!"
+  else
+    "You lose. THe dealer has Blackjack."
+  end
+end
+
 busted = { player: false, dealer: false }
 blackjack = { player: false, dealer: false }
 
-# Player loop
-loop do
-  display_hand(hands)
-  current_scores = calculate_hand(hands)
-  # if blackjack?(:player) && blackjack?
-  if over_twenty_one?(current_scores, :player)
-    busted[:player] = true
-    break
-  end
-  puts "Your current score is #{current_scores[:player].sum}"
-  puts "Do you want to hit, or do you want to stay?"
-  next_move = gets.chomp.downcase
-  break if next_move.start_with?('s')
-  hit!(hands[:player], deck)
-end
+deck = initialize_deck
+hands = deal_cards(deck)
+current_scores = calculate_hand(hands)
 
-# Dealer loop
-if !busted[:player]
+# Checks for blackjack and adjusts boolean
+blackjack!(current_scores, blackjack)
+
+# Only starts the loops if there are no blackjacks
+if blackjack.values.count(false) == 2
+
+  # Player loop
   loop do
-    if over_twenty_one?(current_scores, :dealer)
-      busted[:dealer] = true
-      break
-    elsif current_scores[:dealer].sum >= 17
-      break
-    else
-      hit!(hands[:dealer], deck)
-    end
-
+    display_hand(hands)
     current_scores = calculate_hand(hands)
+    if over_twenty_one?(current_scores, :player)
+      busted[:player] = true
+      break
+    end
+    puts "Your current score is #{current_scores[:player].sum}"
+    puts "Do you want to hit, or do you want to stay?"
+    next_move = gets.chomp.downcase
+    system('clear')
+    break if next_move.start_with?('s')
+    hit!(hands[:player], deck)
+    binding.pry
   end
+
+  # Dealer loop
+  if !busted[:player]
+    loop do
+      if over_twenty_one?(current_scores, :dealer)
+        busted[:dealer] = true
+        break
+      elsif current_scores[:dealer].sum >= 17
+        break
+      else
+        hit!(hands[:dealer], deck)
+      end
+
+      current_scores = calculate_hand(hands)
+    end
+  end
+
 end
 
 # Comparison and display of the appropriate message
-if busted[:player]
+if blackjack.values.include?(true)
+  puts display_blackjack_winner(blackjack)
+elsif busted[:player]
   puts END_MESSAGES[:player_bust]
 elsif busted[:dealer]
   puts END_MESSAGES[:dealer_bust]
@@ -147,6 +172,3 @@ elsif current_scores[:player].sum > current_scores[:dealer].sum
 else
   puts END_MESSAGES[:dealer_wins]
 end
-
-p current_scores
-p hands
