@@ -110,6 +110,11 @@ def display_blackjack_winner(blackjack_record)
   end
 end
 
+def display_final_hands(current_hands)
+  puts "==> The dealer has #{current_hands[:dealer]}"
+  puts "==> You have #{current_hands[:player]}"
+end
+
 busted = { player: false, dealer: false }
 blackjack = { player: false, dealer: false }
 
@@ -157,6 +162,8 @@ if blackjack.values.count(false) == 2
   end
 
 end
+
+display_final_hands(hands)
 
 # Comparison and display of the appropriate message
 if blackjack.values.include?(true)
