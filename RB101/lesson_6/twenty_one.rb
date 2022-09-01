@@ -1,5 +1,3 @@
-# It's a bit repetitive to use the same code under dealing the deck, and hitting. that can just be a method
-# that deals a card, and you call it multiple times for the dealing of the deck
 require 'pry'
 require 'pry-byebug'
 
@@ -22,7 +20,7 @@ end
 ## Looks good
 def deal_cards(full_deck)
   card_hands = { player: [], dealer: [] }
-  card_hands.each do |person, hand|
+  card_hands.each do |_, hand|
     2.times do |_|
       card = full_deck.sample
       hand << card
@@ -56,17 +54,12 @@ def calculate_hand(current_hands)
   scores
 end
 
-## Looks good - slight concern on edge cases with multiple aces but I think it checks out
 def ace_correction(hand, score)
   score.reject! { |card| card == 'Ace' }
 
   hand.each do |card|
     if card == 'Ace'
-      if (score.sum + 11) > 21
-        score << 1
-      else
-        score << 11
-      end
+      (score.sum + 11) > 21 ? score << 1 : score << 11
     end
   end
 
@@ -81,10 +74,9 @@ def hit!(hand, full_deck)
   full_deck.delete_at(index)
 end
 
-# Ok, but not named specifically enough, or just is too niche. This is only the initial hands with a hidden dealer card.
-def display_hand(current_hands)
-  puts "==> The dealer has #{current_hands[:dealer][0]} and an unknown card."
-  puts "==> Your current hand is: #{current_hands[:player]}"
+def display_hands_to_player(current_hands, current_scores)
+  puts "=> The dealer has #{current_hands[:dealer][0]} and an unknown card."
+  puts "=> Your current hand is: #{current_hands[:player]} for a total of #{current_scores[:player].sum}"
 end
 
 ## Looks good
@@ -94,7 +86,7 @@ end
 
 def blackjack!(scores, blackjack)
   scores.each do |person, score|
-    if scores[person].sum == 21
+    if score.sum == 21
       blackjack[person] = true
     end
   end
@@ -103,10 +95,10 @@ end
 def display_blackjack_winner(blackjack_record)
   if blackjack_record.values.count(true) == 2
     "It's a tie. Both players got blackjack."
-  elsif blackjack_record[:player] == 21
+  elsif blackjack_record[:player] == true
     "Congrats! You got Blackjack!"
   else
-    "You lose. THe dealer has Blackjack."
+    "You lose. The dealer has Blackjack."
   end
 end
 
@@ -130,19 +122,17 @@ if blackjack.values.count(false) == 2
 
   # Player loop
   loop do
-    display_hand(hands)
     current_scores = calculate_hand(hands)
+    display_hands_to_player(hands, current_scores)
     if over_twenty_one?(current_scores, :player)
       busted[:player] = true
       break
     end
-    puts "Your current score is #{current_scores[:player].sum}"
     puts "Do you want to hit, or do you want to stay?"
     next_move = gets.chomp.downcase
     system('clear')
     break if next_move.start_with?('s')
     hit!(hands[:player], deck)
-    binding.pry
   end
 
   # Dealer loop
