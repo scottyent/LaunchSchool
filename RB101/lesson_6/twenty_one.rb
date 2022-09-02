@@ -1,11 +1,14 @@
 require 'pry'
 require 'pry-byebug'
 
+MAX_VALUE = 21
+DEALER_MIN = 17
+
 CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']
 END_MESSAGES = {
-  dealer_bust: "The dealer went over 21. You win!",
-  player_bust: "You went over 21. You lose!",
-  player_wins: "You beat the dealer",
+  dealer_bust: "The dealer went over #{MAX_VALUE}. You win!",
+  player_bust: "You went over #{MAX_VALUE}. You lose!",
+  player_wins: "You beat the dealer.",
   dealer_wins: "The dealer wins.",
   tie: "It's a push."
 }
@@ -59,7 +62,7 @@ def ace_correction(hand, score)
 
   hand.each do |card|
     if card == 'Ace'
-      (score.sum + 11) > 21 ? score << 1 : score << 11
+      (score.sum + 11) > MAX_VALUE ? score << 1 : score << 11
     end
   end
 
@@ -81,12 +84,12 @@ end
 
 ## Looks good
 def over_twenty_one?(scores, person)
-  scores[person].sum > 21
+  scores[person].sum > MAX_VALUE
 end
 
 def blackjack!(scores, blackjack)
   scores.each do |person, score|
-    if score.sum == 21
+    if score.sum == MAX_VALUE
       blackjack[person] = true
     end
   end
@@ -102,9 +105,9 @@ def display_blackjack_winner(blackjack_record)
   end
 end
 
-def display_final_hands(current_hands)
-  puts "==> The dealer has #{current_hands[:dealer]}"
-  puts "==> You have #{current_hands[:player]}"
+def display_final_hands(current_hands, scores)
+  puts "==> The dealer has #{current_hands[:dealer]} for a total of #{scores[:dealer].sum}"
+  puts "==> You have #{current_hands[:player]} for a total of #{scores[:player].sum}"
 end
 
 busted = { player: false, dealer: false }
@@ -136,12 +139,12 @@ if blackjack.values.count(false) == 2
   end
 
   # Dealer loop
-  if !busted[:player]
+  unless busted[:player]
     loop do
       if over_twenty_one?(current_scores, :dealer)
         busted[:dealer] = true
         break
-      elsif current_scores[:dealer].sum >= 17
+      elsif current_scores[:dealer].sum >= DEALER_MIN
         break
       else
         hit!(hands[:dealer], deck)
@@ -153,7 +156,7 @@ if blackjack.values.count(false) == 2
 
 end
 
-display_final_hands(hands)
+display_final_hands(hands, current_scores)
 
 # Comparison and display of the appropriate message
 if blackjack.values.include?(true)
