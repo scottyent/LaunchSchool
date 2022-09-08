@@ -21,10 +21,13 @@ def reverse!(array)
   backwards_counter = -1
 
   while index < (array.size / 2)
-    temp_holder = array[index]
+    # temp_holder = array[index]
+    # the solution used multiple assignment to get around the temp variable
 
-    array[index] = array[backwards_counter]
-    array[backwards_counter] = temp_holder
+    array[index], array[backwards_counter] = array[backwards_counter], array[index]
+
+    # array[index] = array[backwards_counter]
+    # array[backwards_counter] = temp_holder
     backwards_counter -= 1
     index += 1
   end
