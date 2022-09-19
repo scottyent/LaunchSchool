@@ -15,6 +15,7 @@ def letter_case_count(string)
 
   string_array.each do |character|
     ascii_value = character.ord
+
     case ascii_value
     when 65..90
       result[:uppercase] += 1
