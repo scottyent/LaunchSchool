@@ -40,7 +40,7 @@ p x == [1, 2, 3, 4]                 # => true
 
 def rotate_string(string)
   array = string.chars
-  rotate_array(array).join
+  array[(1..-1)] + [array[0]].join
 end
 
 p rotate_string("walk")
