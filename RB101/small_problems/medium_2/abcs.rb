@@ -21,9 +21,8 @@
 
 # I went down the dictionary route and I just don't see it as particularly
 # beneficial. I think I'll be better off with nested arrays, particularly
-# because flatten.include woudl be really easy
+# because flatten.include would be really easy
 
-#
 def block_word?(word)
   block = [["B", "O"], ["X", "K"], ["D", "Q"], ["C", "P"], ["N", "A"],
   ["G", "T"], ["R", "E"], ["F", "S"], ["J", "W"], ["H", "U"],
