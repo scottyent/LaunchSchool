@@ -19,7 +19,7 @@ def letter_percentages(str)
   upper_percent = (str.count('A-Z') / total_count) * 100
   neither_percent = (str.count('^A-Za-z') / total_count) * 100
 
-# Further exploration, format to one decimal place
+# Further exploration, format to one decimal place, added .round
   percentages = {
     lowercase: lower_percent.round(1),
     uppercase: upper_percent.round(1),
