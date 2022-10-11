@@ -20,35 +20,47 @@
 require 'pry'
 require 'pry-byebug'
 
-def common_chars(words_array)
-  results = []
-  first_word_array = words_array.shift.chars
+# def common_chars(words_array)
+#   results = []
+#   first_word_array = words_array.shift.chars
 
-  first_word_array.each do |letter|
-    next if results.include?(letter)
-    matched_all = true
+#   first_word_array.each do |letter|
+#     next if results.include?(letter)
+#     matched_all = true
 
-    matched_all = false unless words_array.all? { |word| word.include?(letter) }
+#     matched_all = false unless words_array.all?(/#{letter}/)
 
-    if matched_all
-      lowest_count = first_word_array.join.count(letter)
+#     if matched_all
+#       lowest_count = first_word_array.join.count(letter)
 
-      words_array.each do |word|
-        current_count = word.count(letter)
-        if current_count < lowest_count
-          lowest_count = current_count
-        end
-      end
+#       words_array.each do |word|
+#         current_count = word.count(letter)
+#         if current_count < lowest_count
+#           lowest_count = current_count
+#         end
+#       end
 
-      lowest_count.times { |_| results << letter}
-    end
+#       lowest_count.times { |_| results << letter}
+#     end
+#   end
+
+#   results
+# end
+
+# Answer given
+def common_chars(array)
+  # To prevent mutating the original
+  array = array.map { |word| word.dup}
+
+  chars = array.shift.chars
+
+  chars.select do |char|
+    array.all? { |word| word.sub!(char, "") }
   end
-
-  results
 end
 
 # Test Cases
-p common_chars(["bella", "label", "roller"]) == ["e", "l", "l"]
+p common_chars(["bellla", "labell", "rolller"]) == ["e", "l", "l", "l"]
 p common_chars(%w(cool lock cook)) == ["c", "o"]
 p common_chars(%w(hello goodbye booya random)) == ["o"]
 p common_chars(%w(aabbaaa ccdddddd eeffee ggrrrrr yyyzzz)) == []
