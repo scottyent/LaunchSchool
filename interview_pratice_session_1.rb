@@ -17,6 +17,9 @@
 # on each word you check, also get the count, and save it to count if it's less than the current count
 # lastly for the larger loop, add that letter * the min count into a new results array
 
+require 'pry'
+require 'pry-byebug'
+
 def common_chars(words_array)
   results = []
   first_word_array = words_array.shift.chars
@@ -25,15 +28,7 @@ def common_chars(words_array)
     next if results.include?(letter)
     matched_all = true
 
-    words_array.each do |word|
-      current_word_array = word.chars
-
-      if !current_word_array.include?(letter)
-        matched_all = false
-        break
-      end
-
-    end
+    matched_all = false unless words_array.all? { |word| word.include?(letter) }
 
     if matched_all
       lowest_count = first_word_array.join.count(letter)
