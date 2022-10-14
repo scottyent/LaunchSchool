@@ -24,14 +24,13 @@
 require 'pry'
 require 'pry-byebug'
 
+# Refactoring for only 2 letter substrings since it doesn't need to match all, just greater than one.
+# This is inspired by the logic in the vidieo so far.
+# Wow it worked! I was able to also shorten it down to a single method using map, and get rid of
+# the result array which made the method a lot shorter.
 def substrings(string)
-  result = []
   string_length = string.size
-  (0...string_length - 1).each do |index|
-    (2..string_length - index).each { |sub_length| result << string[index, sub_length] }
-  end
-
-  result
+  (0...string_length - 1).map { |index| string[index, 2] }
 end
 
 def substr_test(string1, string2)
@@ -39,8 +38,8 @@ def substr_test(string1, string2)
   string1.downcase!
   string2.downcase!
 
-  all_substrings = substrings(string1)
-  all_substrings.each { |substring| return true if string2.include?(substring) }
+  two_letter_substrings = substrings(string1)
+  two_letter_substrings.each { |substring| return true if string2.include?(substring) }
 
   false
 end
