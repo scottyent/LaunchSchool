@@ -42,6 +42,31 @@ otherwise return true
 #   true
 # end
 
+# Refactor using the solution given, to now include
+# square and curly brackets:
+require 'pry'
+require 'pry-byebug'
+
+def balanced?(string)
+  balanced_punct = {
+    parens: 0,
+    square: 0,
+    curly: 0
+  }
+
+  string.each_char do |char|
+    balanced_punct[:parens] += 1 if char == '('
+    balanced_punct[:parens] -= 1 if char == ')'
+    balanced_punct[:square] += 1 if char == '['
+    balanced_punct[:square] -= 1 if char == ']'
+    balanced_punct[:curly] += 1 if char == '{'
+    balanced_punct[:curly] -= 1 if char == '}'
+
+    balanced_punct.values.each { |count| break if count < 0 }
+  end
+
+  balanced_punct.values.all?(0)
+end
 # Test Cases
 p balanced?('What (is) this?') == true
 p balanced?('What is) this?') == false
@@ -51,3 +76,23 @@ p balanced?('((What)) (is this))?') == false
 p balanced?('Hey!') == true
 p balanced?(')Hey!(') == false
 p balanced?('What ((is))) up(') == false
+
+# # square brackets
+p balanced?('What [is] this?') == true
+p balanced?('What is] this?') == false
+p balanced?('What [is this?') == false
+p balanced?('[What] [is this]?') == true
+p balanced?('[[What]] [is this]]?') == false
+p balanced?('Hey!') == true
+p balanced?(']Hey![') == false
+p balanced?('What [[is]]] up[') == false
+
+# curly brackets
+p balanced?('What {is} this?') == true
+p balanced?('What is} this?') == false
+p balanced?('What {is this?') == false
+p balanced?('{What} {is this}?') == true
+p balanced?('{{What}}} {is this}}?') == false
+p balanced?('Hey!') == true
+p balanced?('}Hey!{') == false
+p balanced?('What {{is}}} up{') == false
