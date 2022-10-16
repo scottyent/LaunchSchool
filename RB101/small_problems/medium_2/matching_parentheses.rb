@@ -45,9 +45,9 @@ otherwise return true
 # Refactor using the solution given, to now include
 # square and curly brackets:
 require 'pry'
-require 'pry-byebug'
 
 def balanced?(string)
+  imbalanced = false
   balanced_punct = {
     parens: 0,
     square: 0,
@@ -62,7 +62,8 @@ def balanced?(string)
     balanced_punct[:curly] += 1 if char == '{'
     balanced_punct[:curly] -= 1 if char == '}'
 
-    balanced_punct.values.each { |count| break if count < 0 }
+    balanced_punct.values.each { |count| imbalanced = true if count < 0 }
+    break if imbalanced
   end
 
   balanced_punct.values.all?(0)
