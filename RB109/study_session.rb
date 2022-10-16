@@ -28,35 +28,37 @@ require 'pry'
 require 'pry-byebug'
 
 def longest(string)
+  return string if string.size == 1
+
   results = []
   letter_array = string.chars
 
   temp_string = ''
 
-  letter_array.each do |letter|
+  letter_array.each_with_index do |letter, index|
     if temp_string.empty?
       temp_string << letter
-    elsif letter.ord > temp_string[-1].ord
+    elsif letter.ord >= temp_string[-1].ord
       temp_string << letter
+      results << temp_string if index == letter_array.size - 1
     else
       results << temp_string
       temp_string = ''
       temp_string << letter
-      binding.pry
     end
   end
 
-  p results
+  results.sort_by { |result| -result.size }[0]
 end
 
 # Test Cases
-# p longest('asd') == 'as'
+p longest('asd') == 'as'
 p longest('nab') == 'ab'
-# p longest('abcdeapbcdef') ==  'abcde'
-# p longest('asdfaaaabbbbcttavvfffffdf') == 'aaaabbbbctt'
-# p longest('asdfbyfgiklag') == 'fgikl'
-# p longest('z') == 'z'
-# p longest('zyba') == 'z'
+p longest('abcdeapbcdef') ==  'abcde'
+p longest('asdfaaaabbbbcttavvfffffdf') == 'aaaabbbbctt'
+p longest('asdfbyfgiklag') == 'fgikl'
+p longest('z') == 'z'
+p longest('zyba') == 'z'
 
 
 # problem 2
