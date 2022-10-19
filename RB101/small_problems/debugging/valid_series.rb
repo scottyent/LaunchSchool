@@ -5,14 +5,19 @@ For the purposes of this exercise, a valid series of numbers must contain
 exactly three odd numbers. Additionally, the numbers in the series must sum to 47.
 
 Unfortunately, our last test case is not returning the expected result. Why is that?
+
+Answer: the Odd_count in the last line was assigning, not checking if it was equal to 3
+so I changed to == and also refactored to not need a ternary (Since it's just true false)
 =end
 
+require 'pry'
+require 'pry-byebug'
 
 def valid_series?(nums)
   return false if nums.sum != 47
 
   odd_count = nums.count { |n| n.odd? }
-  odd_count = 3 ? true : false
+  odd_count == 3
 end
 
 p valid_series?([5, 6, 2, 7, 3, 12, 4, 8])        # should return true
