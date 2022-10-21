@@ -41,17 +41,21 @@ end
 def idf(term, documents)
   number_of_documents = documents.length.to_f
   number_of_documents_with_term = documents.count { |d| tf(term, d) > 0 }
-
-  Math.log(number_of_documents / number_of_documents_with_term)
+  if number_of_documents_with_term > 0
+    Math.log(number_of_documents / number_of_documents_with_term)
+  else
+    puts "This term doesn't show up in any document"
+    return 0
+  end
 end
 
 # Very simple example
 
-document1 = "Schrödinger's cat is a thought experiment often featured in discussions of the interpretation of quantum mechanics. The Austrian physicist Erwin Schrödinger devised " +
-"it in 1935 as an argument against the Copenhagen interpretation of quantum mechanics, which states that an object in a physical system can simultaneously exist in all possible configurations, " +
-"a state called quantum superposition, and only observing the system forces the object into just one of those possible states. Schrödinger disagreed with this interpretation. In particular, " +
-"quantum superposition could not work with larger objects. As an illustration, he presented a scenario with a cat in a sealed box, whose fate was linked to a subatomic event that may or may not occur. " +
-"In a quantum superposed state of the subatomic particles, the cat would be both alive and dead, until someone opened the box and observed it."
+document1 = "Schrödinger's cat is a thought experiment often featured in discussions of the interpretation of  mechanics. The Austrian physicist Erwin Schrödinger devised " +
+"it in 1935 as an argument against the Copenhagen interpretation of  mechanics, which states that an object in a physical system can simultaneously exist in all possible configurations, " +
+"a state called  superposition, and only observing the system forces the object into just one of those possible states. Schrödinger disagreed with this interpretation. In particular, " +
+" superposition could not work with larger objects. As an illustration, he presented a scenario with a cat in a sealed box, whose fate was linked to a subatomic event that may or may not occur. " +
+"In a  superposed state of the subatomic particles, the cat would be both alive and dead, until someone opened the box and observed it."
 
 document2 = "The domestic cat is a small, furry, carnivorous mammal. The term cat can, however, also refer to wild cats, which include animals like lions, tigers and leopards. " +
 "Cats are claimed to have a lower social IQ than dogs but can solve more difficult cognitive problems and have a longer-term memory. International Cat Day is celebrated on August 8. " +
