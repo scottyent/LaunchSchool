@@ -31,15 +31,15 @@ def generate_madlibs(file_name)
 
   file = File.open("#{file_name}")
   story = file.read
-  story_array = story.split
 
   choices.each do |type, value_array|
+    count = story.split.count { |word| word.include?(type) }
     if type == "verb"
-      story.count(type).times do |_|
+      count.times do |_|
         story.sub!(/\bverb\b/, value_array.sample)
       end
     else
-      story.count(type).times do |_|
+      count.times do |_|
         story.sub!(type, value_array.sample)
       end
     end
