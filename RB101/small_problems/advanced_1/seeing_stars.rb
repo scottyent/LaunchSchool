@@ -83,3 +83,14 @@ star(9)
 #   * * *
 #  *  *  *
 # *   *   *
+
+def circle(width)
+end
+
+circle(7)
+
+   *
+ *  *
+*    *
+ *  *
+  *
