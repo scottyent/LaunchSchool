@@ -88,86 +88,114 @@ that could be in the superclass. How about... towable?
 # 4
 Print to the screen your method lookup for the classes that you have created.
  - Pretty straight forward, juse use ancestors for each class
+
+ # 5
+ Move all of the methods from the MyCar class that also pertain to the MyTruck
+ class into the Vehicle class. Make sure that all of your previous method
+calls are working when you are finished.
+- I already did this in the first exercise and tested speed up and spray paint
+with the added functionality
+
+# 6
+Write a method called age that calls a private method to calculate the age of the vehicle.
+Make sure the private method is not available from outside of the class. You'll need to
+use Ruby's built-in Time class to help.
+:DONE
+
+# 7
+
+
+
 =end
 
-module Towable
-  def tow
-    @towing = true
-  end
-end
+# module Towable
+#   def tow
+#     @towing = true
+#   end
+# end
 
-class Vehicle
-  attr_accessor :year, :color, :model, :speed
+# class Vehicle
+#   attr_accessor :year, :color, :model, :speed
 
-  @@vehicle_count = 0
+#   @@vehicle_count = 0
 
-  def initialize(y, c, m)
-    self.year = y
-    self.color = c
-    self.model = m
-    self.speed = 0
-    @@vehicle_count += 1
-  end
+#   def initialize(y, c, m)
+#     self.year = y
+#     self.color = c
+#     self.model = m
+#     self.speed = 0
+#     @@vehicle_count += 1
+#   end
 
-  def self.how_many_vehicles
-    "#{@@vehicle_count} vehicles have been created"
-  end
+#   def self.how_many_vehicles
+#     "#{@@vehicle_count} vehicles have been created"
+#   end
 
-  def speed_up(number)
-    self.speed += number
-    "You push the accelerator and speed up #{number} MPH"
-  end
+#   def age
+#     "Your #{model} is #{vehicle_age} years old."
+#   end
 
-  def brake(number)
-    self.speed -= number
-    "You push the break and slow down #{number} MPH"
-  end
+#   def speed_up(number)
+#     self.speed += number
+#     "You push the accelerator and speed up #{number} MPH"
+#   end
 
-  def current_speed
-    "You are currently driving #{speed} MPH"
-  end
+#   def brake(number)
+#     self.speed -= number
+#     "You push the break and slow down #{number} MPH"
+#   end
 
-  def turn_off
-    self.speed = 0
-    "You are now parked!"
-  end
+#   def current_speed
+#     "You are currently driving #{speed} MPH"
+#   end
 
-  def gas_mileage(gallons, miles)
-    "#{miles / gallons} miles per gallon of gas"
-  end
+#   def turn_off
+#     self.speed = 0
+#     "You are now parked!"
+#   end
 
-  def spray_paint(color)
-    self.color = color
-    "Sweet upgrade! You now have a very #{color}"
-  end
-end
+#   def gas_mileage(gallons, miles)
+#     "#{miles / gallons} miles per gallon of gas"
+#   end
 
-class MyCar < Vehicle
-  BODY_TYPE = "sedan"
+#   def spray_paint(color)
+#     self.color = color
+#     "Sweet upgrade! You now have a very #{color}"
+#   end
 
-  def spray_paint(color)
-    super + " car"
-  end
+#   private
 
-  def to_s
-    "This is a cool #{color} #{model} from #{year}"
-  end
-end
+#   def vehicle_age
+#     Time.now.year - self.year
+#   end
+# end
 
-class MyTruck < Vehicle
-  BODY_TYPE = "truck"
-  attr_accessor :towing
-  include Towable
+# class MyCar < Vehicle
+#   BODY_TYPE = "sedan"
 
-  def spray_paint(color)
-    super + " truck"
-  end
-end
+#   def spray_paint(color)
+#     super + " car"
+#   end
+
+#   def to_s
+#     "This is a cool #{color} #{model} from #{year}"
+#   end
+# end
+
+# class MyTruck < Vehicle
+#   BODY_TYPE = "truck"
+#   attr_accessor :towing
+#   include Towable
+
+#   def spray_paint(color)
+#     super + " truck"
+#   end
+# end
 
 # puts Vehicle.how_many_vehicles
 
 # eve = MyCar.new(2021, "white", "Tesla")
-# tonka = MyTruck.new(2022, "orange", "Ford")
+# tonka = MyTruck.new(1989, "orange", "Ford")
 
 # puts eve.gas_mileage(12, 500)
 # puts tonka.gas_mileage(10, 100)
@@ -188,3 +216,62 @@ end
 # puts MyCar.ancestors
 # puts "---MyTruck Method Lookup---"
 # puts MyTruck.ancestors
+# puts eve.age
+# puts tonka.age
+
+=begin
+# 7 - different classes
+Create a class 'Student' with attributes name and grade. Do NOT make the
+grade getter public, so joe.grade will raise an error. Create a
+better_grade_than? method, that you can call like so...
+
+# puts "Well done!" if joe.better_grade_than?(bob)
+
+- I was quite hung up on this one, but it was because I was using private
+instead of protected. Protected allows access between instance methods of the same
+class. So the students can use the same protected method. Private doesn't allow this.
+=end
+
+# class Student
+#   attr_accessor :name
+#   attr_writer :grade
+
+#   def initialize(n, g)
+#     self.name = n
+#     self.grade = g
+#   end
+
+#   def better_grade_than?(other_student)
+#     puts "Well done!" if get_grade > other_student.get_grade
+#   end
+
+#   protected
+
+#   def get_grade
+#     @grade
+#   end
+# end
+
+# bobby = Student.new("Bobby", 90)
+# adam = Student.new("Adam", 80)
+
+# bobby.better_grade_than?(adam)
+
+# 8
+=begin
+Given the following code...
+  bob = Person.new
+  bob.hi
+
+And the corresponding error message...
+
+  NoMethodError: private method `hi' called for #<Person:0x007ff61dbb79f0>
+  from (irb):8
+  from /usr/local/rvm/rubies/ruby-2.0.0-rc2/bin/irb:16:in `<main>'
+
+What is the problem and how would you go about fixing it?
+- The easiest solution is that we can move the hi method from private to public space,
+which will then make it work.
+
+Alternatively, if we have hi in the private space for a reason (maybe protected data), we
+can create another method that calls hi inside the class itself, and then returns the result we want
