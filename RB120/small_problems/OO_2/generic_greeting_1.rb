@@ -6,4 +6,11 @@ class Cat
   end
 end
 
+kitty = Cat.new
+
 Cat.generic_greeting
+kitty.class.generic_greeting
+
+# This will print Hello! I'm a cat! Because kitty.class resolves to Cat, and then it calls generic_greeting on it
+
+puts kitty.class
