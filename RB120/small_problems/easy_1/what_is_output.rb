@@ -13,12 +13,12 @@ class Pet
   end
 end
 
-name = 'Fluffy'
-fluffy = Pet.new(name)
-puts fluffy.name
-puts fluffy
-puts fluffy.name
-puts name
+# name = 'Fluffy'
+# fluffy = Pet.new(name)
+# puts fluffy.name
+# puts fluffy
+# puts fluffy.name
+# puts name
 
 #output:
 # "Fluffy"
@@ -32,3 +32,23 @@ puts name
 # I just changed the to_s so that when it interpolates the name variable, it calls a non destructive upcase call
 # I don't really know what the desired behavior is but I assume the goal is to not mutate the original string
 # but upcase it when printing out the object information
+
+# Further exploration
+name = 42
+fluffy = Pet.new(name)
+name += 1
+puts fluffy.name
+puts fluffy
+puts fluffy.name
+puts name
+
+# I think it'll do...
+# "42"
+# "My name is 42"
+# "42"
+# 43
+
+# Correct but maybe they meant what if you ran the original mistaken code with an integer like this?
+# I think they're saying the code "works" when done with an integer
+# the reason is because upcasing an integer won't change anything (just returns a nil in the case of the original code)
+# Also, to_s makes @name point to a brand new string object, so the original name local variable isn't affects.
