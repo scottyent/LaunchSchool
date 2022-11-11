@@ -130,7 +130,7 @@ class RPSgame
   end
   def display_winner
     divider
-    puts "You chose #{human.move}"
+    puts "#{human.name} chose #{human.move}"
     puts "#{computer.name} chose #{computer.move}"
 
     case human.move
