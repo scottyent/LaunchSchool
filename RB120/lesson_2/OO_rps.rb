@@ -1,10 +1,11 @@
-# I'm going to attempt describing the gameplay myself before using their example.
-# Rock paper scissor is a game where each player chooses either rock, paper, or scissor.
-# The two choices are then compared using the game logic for what beats what, and then
+# I'm going to attempt describing the gameplay myself before using their
+# example. Rock paper scissor is a game where each player chooses either rock,
+# paper, or scissor. The two choices are then compared using the game logic for
+# what beats what, and then
 # a winner is declared.
 
-# Ok, I would say it's relatively similar to their description, they were just more
-# explicit on the actual game logic:
+# Ok, I would say it's relatively similar to their description, they were just
+# more explicit on the actual game logic:
 
 # Rock, Paper, Scissors is a two-player game where each player chooses
 # one of three possible moves: rock, paper, or scissors. The chosen moves
@@ -16,15 +17,15 @@
 
 # If the players chose the same move, then it's a tie.
 
-# Again, I'm going to try to extract the nouns myself without looking at the answer:
+# I'm going to try to extract the nouns myself without looking at the answer:
 # player, computer, rock paper scissor?...
 # Their answer:
 # Nouns: player, move, rule
 # Verbs: choose, compare
 
-# - I have no idea how they got that. Move is a verb? but I guess it's a state describing
-# what choice was made, so includes rock/paper/scissor. Rule? Idk what that means. Maybe the
-# hardcoded state of what the rules are?
+# - I have no idea how they got that. Move is a verb? but I guess it's a state
+# describing what choice was made, so includes rock/paper/scissor. Rule?
+# Idk what that means. Maybe the hardcoded state of what the rules are?
 
 # Now we compare the nouns to the verbs and fit them where they belong:
 # Player
@@ -34,8 +35,8 @@
 
 # - compare
 
-# compare wasn't obvious where to go so they left it separate. Alright. Let's attempt
-# to code the basics here.
+# compare wasn't obvious where to go so they left it separate. Alright.
+# Let's attempt to code the basics here.
 
 require 'pry'
 require 'pry-byebug'
@@ -44,12 +45,13 @@ class Move
   include Comparable
   VALUES = %w(rock paper scissors)
   attr_reader :value
+
   def initialize(value)
     @value = value
   end
 
   def to_s
-    self.value
+    value
   end
 
   def scissors?
@@ -65,29 +67,15 @@ class Move
   end
 
   def >(other_player)
-    # binding.pry
-    if rock?
-      return true if other_player.scissors?
-    elsif paper?
-      return true if other_player.rock?
-    elsif scissors?
-      return true if other_player.paper?
-    else
-      return false
-    end
+    (rock? && other_player.scissors?) ||
+      (paper? && other_player.rock?) ||
+      (scissors? && other_player.paper?)
   end
 
   def <(other_player)
-    # binding.pry
-    if rock?
-      return true if other_player.paper?
-    elsif paper?
-      return true if other_player.scissors?
-    elsif scissors?
-      return true if other_player.rock?
-    else
-      return false
-    end
+    (rock? && other_player.paper?) ||
+      (paper? && other_player.scissors?) ||
+      (scissors? && other_player.rock?)
   end
 end
 
@@ -139,6 +127,7 @@ end
 
 class RPSgame
   attr_accessor :human, :computer
+
   def initialize
     @human = Human.new
     @computer = Computer.new
@@ -150,6 +139,7 @@ class RPSgame
     loop do
       human.choose
       computer.choose
+      display_moves
       display_winner
       break unless play_again?
     end
@@ -165,11 +155,14 @@ class RPSgame
       puts "I'm sorry, that's not a valid choice."
     end
   end
-  def display_winner
+
+  def display_moves
     divider
     puts "#{human.name} chose #{human.move}"
     puts "#{computer.name} chose #{computer.move}"
+  end
 
+  def display_winner
     if human.move > computer.move
       puts "#{human.name} wins!"
     elsif human.move < computer.move
@@ -190,14 +183,12 @@ class RPSgame
   end
 
   def divider
-    puts "#{'-' * 30}"
+    divider = '-' * 30
+    puts divider
   end
 end
 
 RPSgame.new.play
-
-
-
 
 # Compare this design with the one in the previous assignment
 
@@ -205,26 +196,34 @@ RPSgame.new.play
 # what is the primary improvement of this new design?
 # what is the primary drawback of this new design?
 
-# Answer - I think this new design is better, because it puts the logic for the particular player
-# into a subclass where we know we're only talking about that type of player. Before, we were essentially
-# creating 2 paths within Player, and now we have two distinct wrappers for each path that have their
-# self contained logic and can easily be read/modified. Another benefit, is it makes it that much easier
-# to generate new computer instances if you wanted to expand the game.
+# Answer - I think this new design is better, because it puts the logic for the
+# particular player into a subclass where we know we're only talking about that
+# type of player. Before, we were essentially creating 2 paths within Player,
+# and now we have two distinct wrappers for each path that have their self
+# contained logic and can easily be read/modified. Another benefit, is it makes
+# it that much easier to generate new computer instances if you wanted to expand
+# the game.
 
-# The primary drawback of this design... in my opinion, is that it just adds a bit to the vertical complexity.
-# Before, all logic was one in one player method, and so you could focus there. With the player class being inherited
-# you now have to consider how changes to that, will impact changes lower in the hierarchy, and be more strategic about this
-# down the road in case you break something.
+# The primary drawback of this design... in my opinion, is that it just adds a
+# bit to the vertical complexity. Before, all logic was one in one player method
+# and so you could focus there. With the player class being inherited you now
+# have to consider how changes to that, will impact changes lower in the
+# hierarchy, and be more strategic about this down the road in case you break
+# something.
 
+# Compare this design with the one in the previous assignment (this is the
+# refactoring to include a Move class):
 
+# what is the primary improvement of this new design? The logic of who wins or
+# loses is simpler and easier to read in the main game engine. It also might be
+# more maintainable down the road because you can just go to the comparison
+# methods and tweak it if you need more options (like fire or whatever)
 
-# Compare this design with the one in the previous assignment (this is the refactoring to include a Move class):
-
-# what is the primary improvement of this new design? The logic of who wins or loses is simpler and easier to read in the main game engine.
-# It also might be more maintainable down the road because you can just go to the comparison methods and tweak it if you need more options (like fire or whatever)
-
-# what is the primary drawback of this new design? I think this was an awfully large amount of work to make that small piece of code a little bit
-#clearer. When it was in one big chunk, you could read it over and work things out. Now, it's creating a move class with its own object
-# we had to refactor to make that work, then created a ton of new methods within the move class
-# and at the end of the day, we just abstracted the logic into two if statements in the < > methods. Is that better? I'm not too sure.
-# It made one area easier to read, while making a huge other area harder to read in my opinion.
+# what is the primary drawback of this new design? I think this was an awfully
+# large amount of work to make that small piece of code a little bit clearer.
+# When it was in one big chunk, you could read it over and work things out.
+# Now, it's creating a move class with its own object we had to refactor to make
+# that work, then created a ton of new methods within the move class and at
+# the end of the day, we just abstracted the logic into two if statements in
+# the < > methods. Is that better? I'm not too sure. It made one area easier
+# to read, while making a huge other area harder to read in my opinion.
