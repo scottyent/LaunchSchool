@@ -40,6 +40,57 @@
 require 'pry'
 require 'pry-byebug'
 
+class Move
+  include Comparable
+  VALUES = %w(rock paper scissors)
+  attr_reader :value
+  def initialize(value)
+    @value = value
+  end
+
+  def to_s
+    self.value
+  end
+
+  def scissors?
+    @value == 'scissors'
+  end
+
+  def rock?
+    @value == 'rock'
+  end
+
+  def paper?
+    @value == 'paper'
+  end
+
+  def >(other_player)
+    # binding.pry
+    if rock?
+      return true if other_player.scissors?
+    elsif paper?
+      return true if other_player.rock?
+    elsif scissors?
+      return true if other_player.paper?
+    else
+      return false
+    end
+  end
+
+  def <(other_player)
+    # binding.pry
+    if rock?
+      return true if other_player.paper?
+    elsif paper?
+      return true if other_player.scissors?
+    elsif scissors?
+      return true if other_player.rock?
+    else
+      return false
+    end
+  end
+end
+
 class Player
   attr_accessor :move, :name
 
@@ -65,10 +116,10 @@ class Human < Player
     loop do
       puts "Please choose rock, paper, or scissors:"
       choice = gets.chomp
-      break if ["rock", "paper", "scissors"].include?(choice)
+      break if Move::VALUES.include?(choice)
       puts "Invalid choice."
     end
-    self.move = choice
+    self.move = Move.new(choice)
   end
 end
 
@@ -78,7 +129,7 @@ class Computer < Player
   end
 
   def choose
-    self.move = ["rock", "paper", "scissors"].sample
+    self.move = Move.new(Move::VALUES.sample)
   end
 end
 
@@ -119,19 +170,12 @@ class RPSgame
     puts "#{human.name} chose #{human.move}"
     puts "#{computer.name} chose #{computer.move}"
 
-    case human.move
-    when 'rock'
-      puts "It's a tie!" if computer.move == 'rock'
-      puts "#{human.name} wins!"    if computer.move == 'scissors'
-      puts "#{computer.name} wins."   if computer.move == 'paper'
-    when 'paper'
-      puts "It's a tie!" if computer.move == 'paper'
-      puts "#{human.name} wins!" if computer.move == 'rock'
-      puts "#{computer.name} wins." if computer.move == 'scissors'
-    when 'scissors'
-      puts "It's a tie!" if computer.move == 'scissors'
-      puts "#{human.name} wins!" if computer.move == 'paper'
-      puts "#{computer.name} wins." if computer.move == 'rock'
+    if human.move > computer.move
+      puts "#{human.name} wins!"
+    elsif human.move < computer.move
+      puts "#{computer.name} wins!"
+    else
+      puts "It's a tie."
     end
   end
 
@@ -155,7 +199,7 @@ RPSgame.new.play
 
 
 
-# Compare this design with the one in the previous assignment:
+# Compare this design with the one in the previous assignment
 
 # is this design, with Human and Computer sub-classes, better? Why, or why not?
 # what is the primary improvement of this new design?
@@ -171,3 +215,16 @@ RPSgame.new.play
 # Before, all logic was one in one player method, and so you could focus there. With the player class being inherited
 # you now have to consider how changes to that, will impact changes lower in the hierarchy, and be more strategic about this
 # down the road in case you break something.
+
+
+
+# Compare this design with the one in the previous assignment (this is the refactoring to include a Move class):
+
+# what is the primary improvement of this new design? The logic of who wins or loses is simpler and easier to read in the main game engine.
+# It also might be more maintainable down the road because you can just go to the comparison methods and tweak it if you need more options (like fire or whatever)
+
+# what is the primary drawback of this new design? I think this was an awfully large amount of work to make that small piece of code a little bit
+#clearer. When it was in one big chunk, you could read it over and work things out. Now, it's creating a move class with its own object
+# we had to refactor to make that work, then created a ton of new methods within the move class
+# and at the end of the day, we just abstracted the logic into two if statements in the < > methods. Is that better? I'm not too sure.
+# It made one area easier to read, while making a huge other area harder to read in my opinion.
