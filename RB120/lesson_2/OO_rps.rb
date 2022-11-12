@@ -41,59 +41,45 @@ require 'pry'
 require 'pry-byebug'
 
 class Player
-  attr_reader :player_type
   attr_accessor :move, :name
-  def initialize(player_type = 'human')
-    @player_type = player_type
-    @move = nil
+
+  def initialize
     @name = set_name
+  end
+end
+
+class Human < Player
+  def set_name
+    n = ''
+    loop do
+      puts "What's your name?"
+      n = gets.chomp
+      break unless n.empty?
+      puts "That's not a valid name."
+    end
+    self.name = n
   end
 
   def choose
-    if human?
-      choice = nil
-      loop do
-        puts "Please choose rock, paper, or scissors:"
-        choice = gets.chomp
-        break if ["rock", "paper", "scissors"].include?(choice)
-        puts "Invalid choice."
-      end
-      self.move = choice
-    else
-      self.move = ["rock", "paper", "scissors"].sample
+    choice = nil
+    loop do
+      puts "Please choose rock, paper, or scissors:"
+      choice = gets.chomp
+      break if ["rock", "paper", "scissors"].include?(choice)
+      puts "Invalid choice."
     end
+    self.move = choice
   end
+end
 
-  def human?
-    player_type == 'human'
-  end
-
-  private
+class Computer < Player
   def set_name
-    if human?
-      puts "What's your name?"
-      gets.chomp
-    else
-      %w(Ultron Dominator Hal Chappie R2D2).sample
-    end
+    self.name = %w(Ultron Dominator Hal Chappie R2D2).sample
   end
-end
 
-class Move
-  def initialize
-    # choice? like whether it's rock paper scissor
+  def choose
+    self.move = ["rock", "paper", "scissors"].sample
   end
-end
-
-class Rule
-  def initialize
-    # ?
-  end
-end
-
-# not sure where compare goes yet
-def compare(move1, move2)
-
 end
 
 # We need an orchestration engine - whatttt? This is interesting :D
@@ -103,8 +89,8 @@ end
 class RPSgame
   attr_accessor :human, :computer
   def initialize
-    @human = Player.new
-    @computer = Player.new('computer')
+    @human = Human.new
+    @computer = Computer.new
   end
 
   def play
@@ -150,7 +136,7 @@ class RPSgame
   end
 
   def display_welcome_message
-    puts "Welcome to Rock Paper Scissors!"
+    puts "Welcome to Rock, Paper, Scissors #{human.name}!"
     divider
   end
 
@@ -165,3 +151,23 @@ class RPSgame
 end
 
 RPSgame.new.play
+
+
+
+
+# Compare this design with the one in the previous assignment:
+
+# is this design, with Human and Computer sub-classes, better? Why, or why not?
+# what is the primary improvement of this new design?
+# what is the primary drawback of this new design?
+
+# Answer - I think this new design is better, because it puts the logic for the particular player
+# into a subclass where we know we're only talking about that type of player. Before, we were essentially
+# creating 2 paths within Player, and now we have two distinct wrappers for each path that have their
+# self contained logic and can easily be read/modified. Another benefit, is it makes it that much easier
+# to generate new computer instances if you wanted to expand the game.
+
+# The primary drawback of this design... in my opinion, is that it just adds a bit to the vertical complexity.
+# Before, all logic was one in one player method, and so you could focus there. With the player class being inherited
+# you now have to consider how changes to that, will impact changes lower in the hierarchy, and be more strategic about this
+# down the road in case you break something.
