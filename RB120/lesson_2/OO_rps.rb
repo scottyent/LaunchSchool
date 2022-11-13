@@ -80,10 +80,11 @@ class Move
 end
 
 class Player
-  attr_accessor :move, :name
+  attr_accessor :move, :name, :score
 
   def initialize
     @name = set_name
+    @score = 0
   end
 end
 
@@ -127,6 +128,7 @@ end
 
 class RPSgame
   attr_accessor :human, :computer
+  MAX_WINS = 3
 
   def initialize
     @human = Human.new
@@ -141,6 +143,8 @@ class RPSgame
       computer.choose
       display_moves
       display_winner
+      display_scoreboard
+      break if final_winner?
       break unless play_again?
     end
     display_goodbye_message
@@ -156,17 +160,29 @@ class RPSgame
     end
   end
 
+  def final_winner?
+    human.score == MAX_WINS || computer.score == MAX_WINS
+  end
+
   def display_moves
     divider
     puts "#{human.name} chose #{human.move}"
     puts "#{computer.name} chose #{computer.move}"
   end
 
+  def display_scoreboard
+    divider
+    puts "#{human.name}: #{human.score}"
+    puts "#{computer.name}: #{computer.score}"
+  end
+
   def display_winner
     if human.move > computer.move
       puts "#{human.name} wins!"
+      human.score += 1
     elsif human.move < computer.move
       puts "#{computer.name} wins!"
+      computer.score += 1
     else
       puts "It's a tie."
     end
@@ -177,8 +193,15 @@ class RPSgame
     divider
   end
 
+  def tournament_winner
+    return computer.name if computer.score == MAX_WINS
+    return human.name if human.score == MAX_WINS
+  end
+
+
   def display_goodbye_message
     divider
+    puts "#{tournament_winner} has won the tournament with #{MAX_WINS} games."
     puts "Thanks for playing! Goodbye."
   end
 
