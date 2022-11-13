@@ -194,14 +194,14 @@ class RPSgame
   end
 
   def tournament_winner
-    return computer.name if computer.score == MAX_WINS
-    return human.name if human.score == MAX_WINS
+    return computer if computer.score > human.score
+    return human if human.score > computer.score
   end
 
 
   def display_goodbye_message
     divider
-    puts "#{tournament_winner} has won the tournament with #{MAX_WINS} games."
+    puts "#{tournament_winner.name} has won the tournament with #{tournament_winner.score} games."
     puts "Thanks for playing! Goodbye."
   end
 
