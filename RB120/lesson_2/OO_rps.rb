@@ -214,7 +214,11 @@ class RPSgame
   def display_goodbye_message
     divider
     if tournament_winner
-      puts "#{tournament_winner.name} has won the tournament with #{tournament_winner.score} games."
+      winning_message = <<~MSG.chomp
+      #{tournament_winner.name} has won the tournament!
+      #{tournament_winner.name} won #{tournament_winner.score.count} games.
+      MSG
+      puts winning_message
     end
     puts "Thanks for playing! Goodbye."
   end
