@@ -4,40 +4,122 @@
 require 'pry'
 require 'pry-byebug'
 
+class Rock
+  attr_reader :value, :beat, :loseto
+
+  def initialize
+    @value = 'rock'
+    @beat = %w(scissors lizard)
+    @loseto = %w(paper spock)
+  end
+
+  def to_s
+    @value
+  end
+end
+
+class Paper
+  attr_reader :option, :beat, :loseto
+
+  def initialize
+    @option = 'paper'
+    @beat = %w(rock spock)
+    @loseto = %w(lizard scissors)
+  end
+
+  def to_s
+    @option
+  end
+end
+
+class Scissors
+  attr_reader :option, :beat, :loseto
+
+  def initialize
+    @option = 'scissors'
+    @beat = %w(paper lizard)
+    @loseto = %w(rock spock)
+  end
+
+  def to_s
+    @option
+  end
+end
+
+class Spock
+  attr_reader :option, :beat, :loseto
+
+  def initialize
+    @option = 'spock'
+    @beat = %w(scissors rock)
+    @loseto = %w(paper lizard)
+  end
+
+  def to_s
+    @option
+  end
+end
+
+class Lizard
+  attr_reader :option, :beat, :loseto
+
+  def initialize
+    @option = 'lizard'
+    @beat = %w(spock paper)
+    @loseto = %w(rock scissors)
+  end
+
+  def to_s
+    @option
+  end
+end
+
 class Move
   include Comparable
-  VALUES = %w(rock paper scissors spock lizard)
+  VALUES = [Rock.new, Paper.new, Scissors.new, Spock.new, Lizard.new]
   attr_reader :value
 
   def initialize(value)
-    @value = value
+    @value = value_to_object(value)
   end
 
+  def value_to_object(input)
+    case input
+    when 'rock' then Rock.new
+    when 'paper' then Paper.new
+    when 'scissors' then Scissors.new
+    when 'spock' then Spock.new
+    when 'lizard' then Lizard.new
+    else
+      input
+    end
+  end
   def to_s
     value
   end
 
   def spock?
-    @value == 'spock'
+    @value.option == 'spock'
   end
 
   def lizard?
-    @value == 'lizard'
+    @value.option == 'lizard'
   end
 
   def scissors?
-    @value == 'scissors'
+    @value.option == 'scissors'
   end
 
   def rock?
-    @value == 'rock'
+    @value.option == 'rock'
   end
 
   def paper?
-    @value == 'paper'
+    @value.option == 'paper'
   end
 
   def >(other_player)
+    binding.pry
     (rock? && (other_player.scissors? || other_player.lizard?)) ||
       (paper? && (other_player.rock? || other_player.spock?)) ||
       (scissors? && (other_player.paper? || other_player.lizard?)) ||
@@ -80,7 +162,7 @@ class Human < Player
     loop do
       puts "Please choose rock, paper, scissors, spock, or lizard:"
       choice = gets.chomp
-      break if Move::VALUES.include?(choice)
+      break if Move::VALUES.map { |obj| obj.to_s }.include?(choice)
       puts "Invalid choice."
     end
     self.move = Move.new(choice)
@@ -141,8 +223,8 @@ class RPSgame
 
   def display_moves
     divider
-    puts "#{human.name} chose #{human.move}"
-    puts "#{computer.name} chose #{computer.move}"
+    puts "#{human.name} chose #{human.move.value}"
+    puts "#{computer.name} chose #{computer.move.value}"
   end
 
   def display_scoreboard
@@ -187,3 +269,5 @@ class RPSgame
     puts divider
   end
 end
+
+RPSgame.new.play
