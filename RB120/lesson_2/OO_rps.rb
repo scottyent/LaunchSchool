@@ -43,7 +43,7 @@ require 'pry-byebug'
 
 class Move
   include Comparable
-  VALUES = %w(rock paper scissors)
+  VALUES = %w(rock paper scissors spock lizard)
   attr_reader :value
 
   def initialize(value)
@@ -52,6 +52,14 @@ class Move
 
   def to_s
     value
+  end
+
+  def spock?
+    @value == 'spock'
+  end
+
+  def lizard?
+    @value == 'lizard'
   end
 
   def scissors?
@@ -67,15 +75,19 @@ class Move
   end
 
   def >(other_player)
-    (rock? && other_player.scissors?) ||
-      (paper? && other_player.rock?) ||
-      (scissors? && other_player.paper?)
+    (rock? && (other_player.scissors? || other_player.lizard?)) ||
+      (paper? && (other_player.rock? || other_player.spock?)) ||
+      (scissors? && (other_player.paper? || other_player.lizard?)) ||
+      (spock? && (other_player.rock? || other_player.scissors?)) ||
+      (lizard? && (other_player.spock? || other_player.paper?))
   end
 
   def <(other_player)
-    (rock? && other_player.paper?) ||
-      (paper? && other_player.scissors?) ||
-      (scissors? && other_player.rock?)
+    (rock? && (other_player.paper? || other_player.spock?)) ||
+      (paper? && (other_player.scissors? || other_player.lizard?)) ||
+      (scissors? && (other_player.rock? || other_player.spock?))
+      (spock? && (other_player.lizard? || other_player.paper?)) ||
+      (lizard? && (other_player.rock? || other_player.scissors?))
   end
 end
 
@@ -103,7 +115,7 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      puts "Please choose rock, paper, or scissors:"
+      puts "Please choose rock, paper, scissors, spock, or lizard:"
       choice = gets.chomp
       break if Move::VALUES.include?(choice)
       puts "Invalid choice."
