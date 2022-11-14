@@ -3,9 +3,28 @@
 # I guess I could have used another branch in Git, but really I don't want
 # to merge this likely, and so this can just be my scrap paper.
 
+# Conclusion: After implementing it as a class, I still think implementing
+# as an actual attribute of player is the better way. It's simpler, it results
+# in less complicated calls to access the score, and last but not least, the
+# score at the end of the day is an integer - we don't need any special
+# comparison operators to make that more streamlined, it works inherently
+# with integers so we basically just have an empty Score class that initializes
+# an attribute with a slightly different name.
+
 
 require 'pry'
 require 'pry-byebug'
+
+class Score
+  include Comparable
+  attr_accessor :count
+
+  def initialize
+    @count = 0
+  end
+
+
+end
 
 class Move
   include Comparable
@@ -50,7 +69,7 @@ class Player
 
   def initialize
     @name = set_name
-    @score = 0
+    @score = Score.new
   end
 end
 
@@ -127,7 +146,7 @@ class RPSgame
   end
 
   def final_winner?
-    human.score == MAX_WINS || computer.score == MAX_WINS
+    human.score.count == MAX_WINS || computer.score.count == MAX_WINS
   end
 
   def display_moves
@@ -138,17 +157,17 @@ class RPSgame
 
   def display_scoreboard
     divider
-    puts "#{human.name}: #{human.score}"
-    puts "#{computer.name}: #{computer.score}"
+    puts "#{human.name}: #{human.score.count}"
+    puts "#{computer.name}: #{computer.score.count}"
   end
 
   def display_winner
     if human.move > computer.move
       puts "#{human.name} wins!"
-      human.score += 1
+      human.score.count += 1
     elsif human.move < computer.move
       puts "#{computer.name} wins!"
-      computer.score += 1
+      computer.score.count += 1
     else
       puts "It's a tie."
     end
@@ -160,15 +179,19 @@ class RPSgame
   end
 
   def tournament_winner
-    return computer if computer.score > human.score
-    return human if human.score > computer.score
+    return computer if computer.score.count > human.score.count
+    return human if human.score.count > computer.score.count
   end
 
 
   def display_goodbye_message
     divider
     if tournament_winner
-      puts "#{tournament_winner.name} has won the tournament with #{tournament_winner.score} games."
+      winning_message = <<~MSG.chomp
+      #{tournament_winner.name} has won the tournament!
+      #{tournament_winner.name} won #{tournament_winner.score.count} games.
+      MSG
+      puts winning_message
     end
     puts "Thanks for playing! Goodbye."
   end
