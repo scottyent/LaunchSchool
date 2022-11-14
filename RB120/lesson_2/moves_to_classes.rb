@@ -5,16 +5,16 @@ require 'pry'
 require 'pry-byebug'
 
 class Rock
-  attr_reader :value, :beat, :loseto
+  attr_reader :option, :beat, :loseto
 
   def initialize
-    @value = 'rock'
+    @option = 'rock'
     @beat = %w(scissors lizard)
     @loseto = %w(paper spock)
   end
 
   def to_s
-    @value
+    @option
   end
 end
 
@@ -119,20 +119,20 @@ class Move
   end
 
   def >(other_player)
-    binding.pry
-    (rock? && (other_player.scissors? || other_player.lizard?)) ||
-      (paper? && (other_player.rock? || other_player.spock?)) ||
-      (scissors? && (other_player.paper? || other_player.lizard?)) ||
-      (spock? && (other_player.rock? || other_player.scissors?)) ||
-      (lizard? && (other_player.spock? || other_player.paper?))
+    # binding.pry
+    (rock? && value.beat.include?(other_player.value.option)) ||
+      (paper? && value.beat.include?(other_player.value.option)) ||
+      (scissors? && value.beat.include?(other_player.value.option)) ||
+      (spock? && value.beat.include?(other_player.value.option)) ||
+      (lizard? && value.beat.include?(other_player.value.option))
   end
 
   def <(other_player)
-    (rock? && (other_player.paper? || other_player.spock?)) ||
-      (paper? && (other_player.scissors? || other_player.lizard?)) ||
-      (scissors? && (other_player.rock? || other_player.spock?))
-      (spock? && (other_player.lizard? || other_player.paper?)) ||
-      (lizard? && (other_player.rock? || other_player.scissors?))
+    (rock? && value.loseto.include?(other_player.value.option)) ||
+      (paper? && value.loseto.include?(other_player.value.option)) ||
+      (scissors? && value.loseto.include?(other_player.value.option)) ||
+      (spock? && value.loseto.include?(other_player.value.option)) ||
+      (lizard? && value.loseto.include?(other_player.value.option))
   end
 end
 
