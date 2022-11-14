@@ -1,6 +1,14 @@
 # A copy of the game to play with the suggestion to make all moves a class
 # unto themsleves.
 
+# Do I think this was better? I don't think so. It made the logic of comparison
+# SLIGHTLY more straight forward instead of having to literally use the string
+# comparisons, but since we had created helper methods for that it wasn't
+# really that much better. I could have accomplished the same thing I think
+# by just making those beats/loseto arrays somewhere else.
+# On the other hand, it added a lot of complexity with more classes, more
+# calls chains together, and reduced readability.
+
 require 'pry'
 require 'pry-byebug'
 
