@@ -133,11 +133,67 @@ end
 
 class Computer < Player
   def set_name
-    self.name = %w(Ultron Dominator Hal Chappie R2D2).sample
+    name_options = %w(Hal)
+    self.name = name_options.sample
   end
 
   def choose
-    self.move = Move.new(Move::VALUES.sample)
+    self.move = Move.new(personality_choice)
+  end
+
+  def personality_choice
+    case self.name
+    when 'Ultron' then ultron_bot
+    when 'Dominator' then dominator_bot
+    when 'Hal' then hal_bot
+    when 'Chappie' then chappie_bot
+    when 'R2D2' then r2d2_bot
+    end
+  end
+
+  def dominator_bot
+    # The Dominator always choose rock
+    'rock'
+  end
+
+  def ultron_bot
+    # Ultron picks spock and paper 30% of the time, but never lizard
+    choices = Move::VALUES
+    ultron_choices = []
+    choices.each do |move|
+      case move
+      when 'rock' then ultron_choices << (['rock'] * 10)
+      when 'spock' then ultron_choices << (['spock'] * 15)
+      when 'scissors' then ultron_choices << (['scissors'] * 10)
+      when 'paper' then ultron_choices << (['paper'] * 15)
+      when 'lizard' then next
+      end
+    end
+    ultron_choices.flatten.sample
+  end
+
+  def hal_bot
+    # Hal picks mostly rock and lizards
+    choices = Move::VALUES
+    hal_choices = []
+    choices.each do |move|
+      case move
+      when 'rock' then hal_choices << (['rock'] * 40)
+      when 'spock' then hal_choices << (['spock'] * 2)
+      when 'scissors' then hal_choices << (['scissors'] * 2)
+      when 'paper' then hal_choices << (['paper'] * 6)
+      when 'lizard' then hal_choices << (['lizard'] * 50)
+      end
+    end
+    hal_choices.flatten.sample
+  end
+
+  def chappie_bot
+    'paper'
+  end
+
+  def r2d2_bot
+    'scissors'
   end
 end
 
