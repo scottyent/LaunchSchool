@@ -138,13 +138,46 @@ end
 # Basically a class to... run the game flow? Kind of like, the outer logic
 # in the procedural flow we've been doing
 
+module Dividable
+  def divider
+    divider = '-' * 25
+    puts divider
+  end
+end
+
+class GameHistory
+  include Dividable
+  attr_accessor :past_choices
+
+  def initialize
+    @past_choices = []
+  end
+
+  def add_round(round)
+    @past_choices << round
+  end
+
+  def display
+    current_round = 1
+    puts "Past round choices:"
+    @past_choices.each do |round|
+      puts "Round #{current_round}: #{round}"
+      current_round += 1
+    end
+    divider
+  end
+
+end
+
 class RPSgame
-  attr_accessor :human, :computer
+  include Dividable
+  attr_accessor :human, :computer, :history
   MAX_WINS = 3
 
   def initialize
     @human = Human.new
     @computer = Computer.new
+    @history = GameHistory.new
   end
 
   def play
@@ -153,9 +186,12 @@ class RPSgame
     loop do
       human.choose
       computer.choose
+      history.add_round(["#{human.name}: #{human.move}",
+        "#{computer.name}: #{computer.move}"])
       display_moves
       display_winner
       display_scoreboard
+      history.display
       break if final_winner?
       break unless play_again?
     end
@@ -186,6 +222,7 @@ class RPSgame
     divider
     puts "#{human.name}: #{human.score}"
     puts "#{computer.name}: #{computer.score}"
+    divider
   end
 
   def display_winner
@@ -221,11 +258,6 @@ class RPSgame
       puts winning_message
     end
     puts "Thanks for playing! Goodbye."
-  end
-
-  def divider
-    divider = '-' * 30
-    puts divider
   end
 end
 
