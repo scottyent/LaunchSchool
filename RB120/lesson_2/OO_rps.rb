@@ -41,6 +41,13 @@
 require 'pry'
 require 'pry-byebug'
 
+module Dividable
+  def divider
+    divider = '-' * 25
+    puts divider
+  end
+end
+
 class Move
   include Comparable
   VALUES = %w(rock paper scissors spock lizard)
@@ -85,7 +92,7 @@ class Move
   def <(other_player)
     (rock? && (other_player.paper? || other_player.spock?)) ||
       (paper? && (other_player.scissors? || other_player.lizard?)) ||
-      (scissors? && (other_player.rock? || other_player.spock?))
+      (scissors? && (other_player.rock? || other_player.spock?)) ||
       (spock? && (other_player.lizard? || other_player.paper?)) ||
       (lizard? && (other_player.rock? || other_player.scissors?))
   end
@@ -137,13 +144,6 @@ end
 # We need an orchestration engine - whatttt? This is interesting :D
 # Basically a class to... run the game flow? Kind of like, the outer logic
 # in the procedural flow we've been doing
-
-module Dividable
-  def divider
-    divider = '-' * 25
-    puts divider
-  end
-end
 
 class GameHistory
   include Dividable
@@ -253,7 +253,7 @@ class RPSgame
     if tournament_winner
       winning_message = <<~MSG.chomp
       #{tournament_winner.name} has won the tournament!
-      #{tournament_winner.name} won #{tournament_winner.score.count} games.
+      #{tournament_winner.name} won #{tournament_winner.score} games.
       MSG
       puts winning_message
     end
