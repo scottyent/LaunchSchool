@@ -166,6 +166,7 @@ class TTTGame
         break if board.full? # || winner?
         computer_moves
         break if board.full? # || winner?
+        system("clear")
         display_board(board)
       end
       display_board(board)
