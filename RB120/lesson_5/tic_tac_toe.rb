@@ -54,10 +54,22 @@ class Board
     index = square_number - 1
     squares[index].marker = marker
   end
+
+  def unmarked_spaces
+    open_spaces = []
+    squares.each_with_index do |square, index|
+      open_spaces << index + 1 if square.unmarked?
+    end
+    open_spaces
+  end
+
+  def full?
+    unmarked_spaces.empty?
+  end
 end
 
 class Square
-  attr_writer :marker
+  attr_accessor :marker
 
   def initialize(marker)
     @marker = marker
@@ -68,6 +80,10 @@ class Square
   end
 
   def update(input_marker)
+  end
+
+  def unmarked?
+    marker == Board::INITIAL_MARKER
   end
 end
 
@@ -82,11 +98,13 @@ end
 # Orchestration Engine
 
 class TTTGame
+  HUMAN_MARKER = "X"
+  COMPUTER_MARKER = "O"
   attr_reader :board, :human, :computer
   def initialize
     @board = Board.new
-    @human = Player.new("X")
-    @computer = Player.new("O")
+    @human = Player.new(HUMAN_MARKER)
+    @computer = Player.new(COMPUTER_MARKER)
   end
 
   def display_welcome_message
@@ -123,11 +141,11 @@ class TTTGame
   end
 
   def human_moves
-    puts "Choose a square between 1-9"
+    puts "Choose a free square: (#{board.unmarked_spaces.join(", ")})"
     square = nil
     loop do
       square = gets.chomp.to_i
-      break if (1..9).include?(square)
+      break if board.unmarked_spaces.include?(square)
       puts "Sorry, that's not a valid choice."
     end
 
@@ -135,16 +153,22 @@ class TTTGame
     board.set_square_at(square, human.marker)
   end
 
+  def computer_moves
+    board.set_square_at((board.unmarked_spaces).sample, computer.marker)
+  end
+
   def play
     # loop do
       display_welcome_message
+      display_board(board)
       loop do
-        display_board(board)
         human_moves
-        # break if winner? || board_full
-        # computer_moves
-        # break if winner? || board_full
+        break if board.full? # || winner?
+        computer_moves
+        break if board.full? # || winner?
+        display_board(board)
       end
+      display_board(board)
       # display_result
     #   break unless play_again?
     # end
