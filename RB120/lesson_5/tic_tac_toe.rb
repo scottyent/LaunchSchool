@@ -32,16 +32,25 @@ Player
 require 'pry'
 require 'pry-byebug'
 
+module AsciiMessages
+  WELCOME = "Welcome to Tic, Tac Toe!"
+end
+
+
 class Board
-  INITIAL_MARKER = " "
+  WINNING_LINES = [[1, 2 ,3], [4, 5, 6], [7, 8, 9]] + # rows
+                [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +   # columns
+                [[1, 5, 9], [3, 5, 7]]                # diagonals
+
   attr_reader :squares
+
   def initialize
     @squares = empty_board
   end
 
   def empty_board
     arr = []
-    9.times { |_| arr << Square.new(INITIAL_MARKER) }
+    9.times { |_| arr << Square.new }
     arr
   end
 
@@ -66,12 +75,31 @@ class Board
   def full?
     unmarked_spaces.empty?
   end
+
+  def winner?
+    !!detect_winner
+  end
+
+  # returns winning marker or nil
+  def detect_winner
+    winner = nil
+    WINNING_LINES.each do |line|
+      line_index = line.map { |space_num| space_num - 1}
+      if squares[line_index[0]] == squares[line_index[1]] &&
+           squares[line_index[1]] == squares[line_index[2]]
+           square_marker = get_square_at(line_index[0])
+        winner = square_marker if square_marker != Square::INITIAL_MARKER
+      end
+    end
+  end
 end
 
 class Square
+  INITIAL_MARKER = " "
+
   attr_accessor :marker
 
-  def initialize(marker)
+  def initialize(marker=INITIAL_MARKER)
     @marker = marker
   end
 
@@ -83,7 +111,7 @@ class Square
   end
 
   def unmarked?
-    marker == Board::INITIAL_MARKER
+    marker == INITIAL_MARKER
   end
 end
 
@@ -98,6 +126,8 @@ end
 # Orchestration Engine
 
 class TTTGame
+  include AsciiMessages
+
   HUMAN_MARKER = "X"
   COMPUTER_MARKER = "O"
   attr_reader :board, :human, :computer
@@ -108,8 +138,7 @@ class TTTGame
   end
 
   def display_welcome_message
-    puts "Welcome to Tic Tac Toe!"
-    divider
+    puts WELCOME
   end
 
   def display_goodbye_message
@@ -121,7 +150,9 @@ class TTTGame
     puts "-" * 17
   end
 
-  def display_board(board)
+  def display_board
+    system("clear")
+    puts "You're the #{human.marker} and the computer is the #{computer.marker}"
     puts
     puts "     |     |     "
     puts "  #{board.get_square_at(1)}  |  #{board.get_square_at(2)}  |  #{board.
@@ -157,20 +188,24 @@ class TTTGame
     board.set_square_at((board.unmarked_spaces).sample, computer.marker)
   end
 
+  def display_result
+    display_board
+    puts "This should tell you who won or not or tie"
+  end
+
   def play
     # loop do
       display_welcome_message
-      display_board(board)
+      # sleep 3
+      display_board
       loop do
         human_moves
-        break if board.full? # || winner?
+        break if board.full? || board.winner?
         computer_moves
-        break if board.full? # || winner?
-        system("clear")
-        display_board(board)
+        break if board.full? || board.winner?
+        display_board
       end
-      display_board(board)
-      # display_result
+      display_result
     #   break unless play_again?
     # end
     display_goodbye_message
