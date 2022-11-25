@@ -82,16 +82,15 @@ class Board
 
   # returns winning marker or nil
   def detect_winner
-    winner = nil
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1}
       if (squares[line_index[0]].marker == squares[line_index[1]].marker &&
            squares[line_index[1]].marker == squares[line_index[2]].marker)
            square_marker = get_square_at(line[0]).marker
-        winner = square_marker if square_marker != Square::INITIAL_MARKER
+        return square_marker if square_marker != Square::INITIAL_MARKER
       end
     end
-    winner
+    nil
   end
 end
 
@@ -191,7 +190,12 @@ class TTTGame
 
   def display_result
     display_board
-    puts "This should tell you who won or not or tie"
+    if board.full? && !board.winner?
+      puts "It's a tie!"
+    else
+      winner = board.detect_winner
+      puts winner == HUMAN_MARKER ? "You won!" : "The computer won."
+    end
   end
 
   def play
