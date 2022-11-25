@@ -190,11 +190,13 @@ class TTTGame
 
   def display_result
     display_board
-    if board.full? && !board.winner?
-      puts "It's a tie!"
+    case board.detect_winner
+    when HUMAN_MARKER
+      puts "You won!"
+    when COMPUTER_MARKER
+      puts "Computer won."
     else
-      winner = board.detect_winner
-      puts winner == HUMAN_MARKER ? "You won!" : "The computer won."
+      puts "It's a tie!"
     end
   end
 
