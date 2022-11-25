@@ -84,13 +84,24 @@ class Board
   def detect_winner
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1}
-      if (squares[line_index[0]].marker == squares[line_index[1]].marker &&
-           squares[line_index[1]].marker == squares[line_index[2]].marker)
-           square_marker = get_square_at(line[0]).marker
-        return square_marker if square_marker != Square::INITIAL_MARKER
+
+      if count_human_marker(line_index) == 3
+        return TTTGame::HUMAN_MARKER
+      elsif count_computer_marker(line_index) == 3
+        return TTTGame::COMPUTER_MARKER
       end
     end
     nil
+  end
+
+  def count_human_marker(line)
+    row = line.map { |index| squares[index].marker }
+    row.count(TTTGame::HUMAN_MARKER)
+  end
+
+  def count_computer_marker(line)
+    row = line.map { |index| squares[index].marker }
+    row.count(TTTGame::COMPUTER_MARKER)
   end
 end
 
@@ -105,9 +116,6 @@ class Square
 
   def to_s
     @marker
-  end
-
-  def update(input_marker)
   end
 
   def unmarked?
@@ -190,6 +198,7 @@ class TTTGame
 
   def display_result
     display_board
+
     case board.detect_winner
     when HUMAN_MARKER
       puts "You won!"
