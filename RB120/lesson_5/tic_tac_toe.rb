@@ -54,6 +54,10 @@ class Board
     arr
   end
 
+  def reset
+    @squares = empty_board
+  end
+
   def get_square_at(square_number)
     index = square_number - 1
     squares[index]
@@ -209,24 +213,46 @@ class TTTGame
     end
   end
 
+  def play_again?
+    answer = nil
+    loop do
+      puts "Would you like to play again? y/n"
+      answer = gets.chomp.downcase
+      break if %(y n).include? answer
+      puts "I'm sorry that's not a valid choice"
+    end
+
+    answer == 'y'
+  end
+
   def play
-    # loop do
-      display_welcome_message
-      # sleep 3
+    display_welcome_message
+    sleep 2
+
+    loop do
       display_board
+
       loop do
         human_moves
         break if board.full? || board.winner?
+
         computer_moves
         break if board.full? || board.winner?
+
         display_board
       end
       display_result
-    #   break unless play_again?
-    # end
+      break unless play_again?
+      board.reset
+      puts "Let's play again!"
+      sleep 1
+    end
+
     display_goodbye_message
   end
 end
 
 game = TTTGame.new
 game.play
+
+
