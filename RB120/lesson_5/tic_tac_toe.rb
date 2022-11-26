@@ -166,8 +166,11 @@ class TTTGame
     puts "-" * 17
   end
 
-  def display_board
+  def clear_screen_and_display_board
     clear_screen
+    display_board
+  end
+  def display_board
     puts "You're the #{human.marker} and the computer is the #{computer.marker}"
     puts
     puts "     |     |     "
@@ -196,7 +199,6 @@ class TTTGame
       puts "Sorry, that's not a valid choice."
     end
 
-    # binding.pry
     board.set_square_at(square, human.marker)
   end
 
@@ -205,7 +207,7 @@ class TTTGame
   end
 
   def display_result
-    display_board
+    clear_screen_and_display_board
 
     case board.detect_winner
     when HUMAN_MARKER
@@ -232,7 +234,6 @@ class TTTGame
   def play
     clear_screen
     display_welcome_message
-    sleep 2
 
     loop do
       display_board
@@ -244,13 +245,12 @@ class TTTGame
         computer_moves
         break if board.full? || board.winner?
 
-        display_board
+        clear_screen_and_display_board
       end
       display_result
       break unless play_again?
       board.reset
       puts "Let's play again!"
-      sleep 1
     end
 
     display_goodbye_message
