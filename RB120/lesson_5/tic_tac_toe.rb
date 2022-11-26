@@ -54,13 +54,22 @@ class Board
     arr
   end
 
-  def reset
-    @squares = empty_board
+  def display
+    puts "     |     |     "
+    puts "  #{squares(0)}  |  #{squares(1)}  |  #{squares(2)}"
+    puts "     |     |     "
+    puts "-----------------"
+    puts "     |     |     "
+    puts "  #{squares(3)}  |  #{squares(4)}  |  #{squares(5)}"
+    puts "     |     |     "
+    puts "-----------------"
+    puts "     |     |     "
+    puts "  #{squares(6)}  |  #{squares(7)}  |  #{squares(8)}"
+    puts "     |     |     "
   end
 
-  def get_square_at(square_number)
-    index = square_number - 1
-    squares[index]
+  def reset
+    @squares = empty_board
   end
 
   def set_square_at(square_number, marker)
@@ -155,6 +164,7 @@ class TTTGame
 
   def display_welcome_message
     puts WELCOME
+    divider
   end
 
   def display_goodbye_message
@@ -163,30 +173,18 @@ class TTTGame
   end
 
   def divider
-    puts "-" * 17
+    puts "-" * 30
   end
 
   def clear_screen_and_display_board
     clear_screen
     display_board
   end
+
   def display_board
     puts "You're the #{human.marker} and the computer is the #{computer.marker}"
     puts
-    puts "     |     |     "
-    puts "  #{board.get_square_at(1)}  |  #{board.get_square_at(2)}  |  #{board.
-      get_square_at(3)}"
-    puts "     |     |     "
-    puts "-----------------"
-    puts "     |     |     "
-    puts "  #{board.get_square_at(4)}  |  #{board.get_square_at(5)}  |  #{board.
-      get_square_at(6)}"
-    puts "     |     |     "
-    puts "-----------------"
-    puts "     |     |     "
-    puts "  #{board.get_square_at(7)}  |  #{board.get_square_at(8)}  |  #{board.
-      get_square_at(9)}"
-    puts "     |     |     "
+    board.display
     puts
   end
 
@@ -234,8 +232,13 @@ class TTTGame
   def reset
     board.reset
     clear_screen
-    puts "Let's play again!"
   end
+
+  def display_play_again_message
+    puts "Let's play again!"
+    divider
+  end
+
 
   def play
     clear_screen
@@ -256,6 +259,7 @@ class TTTGame
       display_result
       break unless play_again?
       reset
+      display_play_again_message
     end
 
     display_goodbye_message
