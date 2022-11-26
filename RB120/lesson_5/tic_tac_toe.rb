@@ -149,6 +149,10 @@ class TTTGame
     @computer = Player.new(COMPUTER_MARKER)
   end
 
+  def clear_screen
+    system 'clear'
+  end
+
   def display_welcome_message
     puts WELCOME
   end
@@ -163,7 +167,7 @@ class TTTGame
   end
 
   def display_board
-    system("clear")
+    clear_screen
     puts "You're the #{human.marker} and the computer is the #{computer.marker}"
     puts
     puts "     |     |     "
@@ -226,6 +230,7 @@ class TTTGame
   end
 
   def play
+    clear_screen
     display_welcome_message
     sleep 2
 
