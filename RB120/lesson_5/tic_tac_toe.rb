@@ -98,16 +98,18 @@ class Board
       line_index = line.map { |space_num| space_num - 1}
 
       if count_marker(line_index) == 3
-        choice = squares[line_index[0]].marker
-        return choice if choice != Square::INITIAL_MARKER
+        choice = squares[line_index.first]
+        return choice.marker if choice.marked?
       end
     end
     nil
   end
 
+  private
+
   def count_marker(line)
     row = line.map { |index| squares[index].marker }
-    row.count(row[0])
+    row.count(row.first)
   end
 end
 
@@ -127,6 +129,10 @@ class Square
   def unmarked?
     marker == INITIAL_MARKER
   end
+
+  def marked?
+    marker != INITIAL_MARKER
+  end
 end
 
 class Player
@@ -144,11 +150,12 @@ class TTTGame
 
   HUMAN_MARKER = "X"
   COMPUTER_MARKER = "O"
-  attr_reader :board, :human, :computer
+  attr_reader :board, :human, :computer, :first_player
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
+    @first_player = true
   end
 
   def clear_screen
@@ -225,6 +232,7 @@ class TTTGame
 
   def reset
     board.reset
+    @first_player = true
     clear_screen
   end
 
@@ -233,6 +241,14 @@ class TTTGame
     divider
   end
 
+  def game_over?
+    board.full? || board.winner?
+  end
+
+  def current_player_moves
+    first_player ? human_moves : computer_moves
+    @first_player = !first_player
+  end
 
   def play
     clear_screen
@@ -242,13 +258,9 @@ class TTTGame
       display_board
 
       loop do
-        human_moves
-        break if board.full? || board.winner?
-
-        computer_moves
-        break if board.full? || board.winner?
-
-        clear_screen_and_display_board
+        current_player_moves
+        break if game_over?
+        clear_screen_and_display_board if first_player
       end
       display_result
       break unless play_again?
