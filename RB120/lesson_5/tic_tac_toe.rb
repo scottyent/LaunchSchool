@@ -97,23 +97,17 @@ class Board
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1}
 
-      if count_human_marker(line_index) == 3
-        return TTTGame::HUMAN_MARKER
-      elsif count_computer_marker(line_index) == 3
-        return TTTGame::COMPUTER_MARKER
+      if count_marker(line_index) == 3
+        choice = squares[line_index[0]].marker
+        return choice if choice != Square::INITIAL_MARKER
       end
     end
     nil
   end
 
-  def count_human_marker(line)
+  def count_marker(line)
     row = line.map { |index| squares[index].marker }
-    row.count(TTTGame::HUMAN_MARKER)
-  end
-
-  def count_computer_marker(line)
-    row = line.map { |index| squares[index].marker }
-    row.count(TTTGame::COMPUTER_MARKER)
+    row.count(row[0])
   end
 end
 
