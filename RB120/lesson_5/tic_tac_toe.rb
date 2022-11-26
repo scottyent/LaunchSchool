@@ -54,27 +54,26 @@ class Board
     arr
   end
 
-  def display
+  def draw
     puts "     |     |     "
-    puts "  #{squares(0)}  |  #{squares(1)}  |  #{squares(2)}"
-    puts "     |     |     "
-    puts "-----------------"
-    puts "     |     |     "
-    puts "  #{squares(3)}  |  #{squares(4)}  |  #{squares(5)}"
+    puts "  #{squares[0]}  |  #{squares[1]}  |  #{squares[2]}"
     puts "     |     |     "
     puts "-----------------"
     puts "     |     |     "
-    puts "  #{squares(6)}  |  #{squares(7)}  |  #{squares(8)}"
+    puts "  #{squares[3]}  |  #{squares[4]}  |  #{squares[5]}"
     puts "     |     |     "
+    puts "-----------------"
+    puts "     |     |     "
+    puts "  #{squares[6]}  |  #{squares[7]}  |  #{squares[8]}"
+    puts "     |     |     "
+  end
+
+  def []=(space, marker)
+    squares[space - 1].marker = marker
   end
 
   def reset
     @squares = empty_board
-  end
-
-  def set_square_at(square_number, marker)
-    index = square_number - 1
-    squares[index].marker = marker
   end
 
   def unmarked_spaces
@@ -184,7 +183,7 @@ class TTTGame
   def display_board
     puts "You're the #{human.marker} and the computer is the #{computer.marker}"
     puts
-    board.display
+    board.draw
     puts
   end
 
@@ -197,11 +196,12 @@ class TTTGame
       puts "Sorry, that's not a valid choice."
     end
 
-    board.set_square_at(square, human.marker)
+    board[square] = human.marker
   end
 
   def computer_moves
-    board.set_square_at((board.unmarked_spaces).sample, computer.marker)
+    random_space = (board.unmarked_spaces).sample
+    board[random_space] = computer.marker
   end
 
   def display_result
