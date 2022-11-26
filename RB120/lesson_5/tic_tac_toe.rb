@@ -61,7 +61,6 @@ class Board
   def winning_marker
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1}
-
       if count_marker(line_index) == 3
         choice = squares[line_index.first]
         return choice.marker if choice.marked?
@@ -111,6 +110,17 @@ end
 # Orchestration Engine
 
 class TTTGame
+  HUMAN_MARKER = "X"
+  COMPUTER_MARKER = "O"
+
+  attr_reader :board, :human, :computer, :first_player
+
+  def initialize
+    @board = Board.new
+    @human = Player.new(HUMAN_MARKER)
+    @computer = Player.new(COMPUTER_MARKER)
+    @first_player = true
+  end
 
   def play
     clear_screen
@@ -124,6 +134,7 @@ class TTTGame
         break if game_over?
         clear_screen_and_display_board if first_player
       end
+
       display_result
       break unless play_again?
       reset
@@ -134,17 +145,6 @@ class TTTGame
   end
 
   private
-
-  HUMAN_MARKER = "X"
-  COMPUTER_MARKER = "O"
-  attr_reader :board, :human, :computer, :first_player
-
-  def initialize
-    @board = Board.new
-    @human = Player.new(HUMAN_MARKER)
-    @computer = Player.new(COMPUTER_MARKER)
-    @first_player = true
-  end
 
   def clear_screen
     system 'clear'
