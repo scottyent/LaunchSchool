@@ -81,11 +81,11 @@ class Board
   end
 
   def winner?
-    !!detect_winner
+    !!winning_marker
   end
 
   # returns winning marker or nil
-  def detect_winner
+  def winning_marker
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1}
 
@@ -209,7 +209,7 @@ class TTTGame
   def display_result
     clear_screen_and_display_board
 
-    case board.detect_winner
+    case board.winning_marker
     when HUMAN_MARKER
       puts "You won!"
     when COMPUTER_MARKER
