@@ -32,10 +32,6 @@ Player
 require 'pry'
 require 'pry-byebug'
 
-module AsciiMessages
-  WELCOME = "Welcome to Tic, Tac Toe!"
-end
-
 
 class Board
   WINNING_LINES = [[1, 2 ,3], [4, 5, 6], [7, 8, 9]] + # rows
@@ -146,11 +142,34 @@ end
 # Orchestration Engine
 
 class TTTGame
-  include AsciiMessages
+
+  def play
+    clear_screen
+    display_welcome_message
+
+    loop do
+      display_board
+
+      loop do
+        current_player_moves
+        break if game_over?
+        clear_screen_and_display_board if first_player
+      end
+      display_result
+      break unless play_again?
+      reset
+      display_play_again_message
+    end
+
+    display_goodbye_message
+  end
+
+  private
 
   HUMAN_MARKER = "X"
   COMPUTER_MARKER = "O"
   attr_reader :board, :human, :computer, :first_player
+
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
@@ -163,7 +182,7 @@ class TTTGame
   end
 
   def display_welcome_message
-    puts WELCOME
+    puts "Welcome to Tic, Tac Toe!"
     divider
   end
 
@@ -248,27 +267,6 @@ class TTTGame
   def current_player_moves
     first_player ? human_moves : computer_moves
     @first_player = !first_player
-  end
-
-  def play
-    clear_screen
-    display_welcome_message
-
-    loop do
-      display_board
-
-      loop do
-        current_player_moves
-        break if game_over?
-        clear_screen_and_display_board if first_player
-      end
-      display_result
-      break unless play_again?
-      reset
-      display_play_again_message
-    end
-
-    display_goodbye_message
   end
 end
 
