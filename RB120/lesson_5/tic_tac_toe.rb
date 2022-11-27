@@ -1,11 +1,7 @@
-require 'pry'
-require 'pry-byebug'
-
-
 class Board
-  WINNING_LINES = [[1, 2 ,3], [4, 5, 6], [7, 8, 9]] + # rows
-                [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +   # columns
-                [[1, 5, 9], [3, 5, 7]]                # diagonals
+  WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
+                  [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
+                  [[1, 5, 9], [3, 5, 7]]              # diagonals
 
   attr_reader :squares
 
@@ -19,6 +15,8 @@ class Board
     arr
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def draw
     puts "     |     |     "
     puts "  #{squares[0]}  |  #{squares[1]}  |  #{squares[2]}"
@@ -32,6 +30,8 @@ class Board
     puts "  #{squares[6]}  |  #{squares[7]}  |  #{squares[8]}"
     puts "     |     |     "
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def []=(space, marker)
     squares[space - 1].marker = marker
@@ -44,7 +44,7 @@ class Board
   def unmarked_spaces
     open_spaces = []
     squares.each_with_index do |square, index|
-      open_spaces << index + 1 if square.unmarked?
+      open_spaces << (index + 1) if square.unmarked?
     end
     open_spaces
   end
@@ -60,7 +60,7 @@ class Board
   # returns winning marker or nil
   def winning_marker
     WINNING_LINES.each do |line|
-      line_index = line.map { |space_num| space_num - 1}
+      line_index = line.map { |space_num| space_num - 1 }
       if count_marker(line_index) == 3
         choice = squares[line_index.first]
         return choice.marker if choice.marked?
@@ -99,7 +99,7 @@ class Square
   end
 end
 
-Player = Struct.new(:marker)
+Player = Struct.new('Person', :marker)
 
 # Orchestration Engine
 
@@ -119,26 +119,30 @@ class TTTGame
   def play
     clear_screen
     display_welcome_message
+    main_game
+    display_goodbye_message
+  end
 
+  private
+
+  def main_game
     loop do
       display_board
-
-      loop do
-        current_player_moves
-        break if game_over?
-        clear_screen_and_display_board if first_player
-      end
-
+      player_move
       display_result
       break unless play_again?
       reset
       display_play_again_message
     end
-
-    display_goodbye_message
   end
 
-  private
+  def player_move
+    loop do
+      current_player_moves
+      break if game_over?
+      clear_screen_and_display_board if first_player
+    end
+  end
 
   def clear_screen
     system 'clear'
@@ -171,7 +175,7 @@ class TTTGame
   end
 
   def human_moves
-    puts "Choose a free square: (#{board.unmarked_spaces.join(", ")})"
+    puts "Choose a free square: (#{board.unmarked_spaces.join(', ')})"
     square = nil
     loop do
       square = gets.chomp.to_i
@@ -235,7 +239,6 @@ end
 
 game = TTTGame.new
 game.play
-
 
 =begin
 My own short description of the game:
