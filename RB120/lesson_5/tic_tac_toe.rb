@@ -1,3 +1,6 @@
+require 'pry'
+require 'pry-byebug'
+
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
@@ -125,6 +128,19 @@ class TTTGame
 
   private
 
+  def joinor(open_array, delimeter=', ', conjunction='or')
+    open_count = open_array.size
+    return open_array.first if open_count == 1
+
+    # If instead of case to catch all sizes larger than 3 specifically
+    if open_count == 2
+      open_array.join(" #{conjunction} ")
+    elsif open_count >= 3
+      first = open_array[0..-2]
+      first.join(delimeter) + "#{delimeter}#{conjunction} #{open_array.last}"
+    end
+  end
+
   def main_game
     loop do
       display_board
@@ -175,7 +191,7 @@ class TTTGame
   end
 
   def human_moves
-    puts "Choose a free square: (#{board.unmarked_spaces.join(', ')})"
+    puts "Choose a free square: (#{joinor(board.unmarked_spaces)})"
     square = nil
     loop do
       square = gets.chomp.to_i
@@ -239,6 +255,7 @@ end
 
 game = TTTGame.new
 game.play
+
 
 =begin
 My own short description of the game:
