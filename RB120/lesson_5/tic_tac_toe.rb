@@ -102,13 +102,21 @@ class Square
   end
 end
 
-Player = Struct.new('Person', :marker)
+class Player
+  attr_accessor :games_won, :marker
+
+  def initialize(marker)
+    @marker = marker
+    @games_won = 0
+  end
+end
 
 # Orchestration Engine
 
 class TTTGame
   HUMAN_MARKER = "X"
   COMPUTER_MARKER = "O"
+  TOURNAMENT_MAX = 5
 
   attr_reader :board, :human, :computer, :first_player
 
@@ -128,9 +136,34 @@ class TTTGame
 
   private
 
+  def main_game
+    loop do
+      display_board
+      player_move
+      display_result
+      break if tournament_over?
+      break unless play_again?
+      reset
+      display_play_again_message
+    end
+  end
+
+  def tournament_over?
+    @human.games_won == TOURNAMENT_MAX || @computer.games_won == TOURNAMENT_MAX
+  end
+
+
+  def player_move
+    loop do
+      current_player_moves
+      break if game_over?
+      clear_screen_and_display_board if first_player
+    end
+  end
+
   def joinor(open_array, delimeter=', ', conjunction='or')
     open_count = open_array.size
-    return open_array.first if open_count == 1
+    return open_array.first.to_s if open_count == 1
 
     # If instead of case to catch all sizes larger than 3 specifically
     if open_count == 2
@@ -141,31 +174,13 @@ class TTTGame
     end
   end
 
-  def main_game
-    loop do
-      display_board
-      player_move
-      display_result
-      break unless play_again?
-      reset
-      display_play_again_message
-    end
-  end
-
-  def player_move
-    loop do
-      current_player_moves
-      break if game_over?
-      clear_screen_and_display_board if first_player
-    end
-  end
-
   def clear_screen
     system 'clear'
   end
 
   def display_welcome_message
     puts "Welcome to Tic, Tac Toe!"
+    puts "First to win #{TOURNAMENT_MAX} games, wins the tournament."
     divider
   end
 
@@ -175,7 +190,7 @@ class TTTGame
   end
 
   def divider
-    puts "-" * 30
+    puts "-" * 38
   end
 
   def clear_screen_and_display_board
@@ -185,6 +200,7 @@ class TTTGame
 
   def display_board
     puts "You're the #{human.marker} and the computer is the #{computer.marker}"
+    display_tournament_score
     puts
     board.draw
     puts
@@ -207,13 +223,20 @@ class TTTGame
     board[random_space] = computer.marker
   end
 
+  def display_tournament_score
+    puts "You: #{@human.games_won} | Computer: #{@computer.games_won}"
+  end
+
+
   def display_result
     clear_screen_and_display_board
 
     case board.winning_marker
     when HUMAN_MARKER
+      @human.games_won += 1
       puts "You won!"
     when COMPUTER_MARKER
+      @computer.games_won += 1
       puts "Computer won."
     else
       puts "It's a tie!"
