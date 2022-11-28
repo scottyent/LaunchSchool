@@ -72,7 +72,25 @@ class Board
     nil
   end
 
+  # returns nil or a space number to move to
+  def computer_defensive_move
+    WINNING_LINES.each do |line|
+      line_index = line.map { |space_num| space_num - 1 }
+      if human_count(line_index) == 2
+        line_index.each do |index|
+          return (index + 1) if squares[index].unmarked?
+        end
+      end
+    end
+    nil
+  end
+
   private
+
+  def human_count(line)
+    row = line.map { |index| squares[index].marker }
+    row.count(TTTGame::HUMAN_MARKER)
+  end
 
   def count_marker(line)
     row = line.map { |index| squares[index].marker }
@@ -219,8 +237,9 @@ class TTTGame
   end
 
   def computer_moves
-    random_space = (board.unmarked_spaces).sample
-    board[random_space] = computer.marker
+    defense = board.computer_defensive_move
+    choice = defense ? defense : board.unmarked_spaces.sample
+    board[choice] = computer.marker
   end
 
   def display_tournament_score
