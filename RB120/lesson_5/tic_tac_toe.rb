@@ -64,7 +64,7 @@ class Board
   def winning_marker
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1 }
-      if count_marker(line_index) == 3
+      if winning_row?(line_index)
         choice = squares[line_index.first]
         return choice.marker if choice.marked?
       end
@@ -72,29 +72,47 @@ class Board
     nil
   end
 
-  # returns nil or a space number to move to
-  def computer_defensive_move
+  # returns nil or a optimal space number to move to
+  def find_optimal_space
+    defense = nil
+    offense = nil
+
     WINNING_LINES.each do |line|
       line_index = line.map { |space_num| space_num - 1 }
-      if human_count(line_index) == 2
+
+      # Find an option for defense
+      if marker_count(line_index, TTTGame::HUMAN_MARKER) == 2
         line_index.each do |index|
-          return (index + 1) if squares[index].unmarked?
+          defense = (index + 1) if squares[index].unmarked?
+        end
+      end
+
+      # Find an option for offense
+      if marker_count(line_index, TTTGame::COMPUTER_MARKER) == 2
+        line_index.each do |index|
+          offense = (index + 1) if squares[index].unmarked?
         end
       end
     end
-    nil
+
+    defense ? defense : offense
   end
 
   private
 
-  def human_count(line)
-    row = line.map { |index| squares[index].marker }
-    row.count(TTTGame::HUMAN_MARKER)
+  def row_string(line)
+    row = line.map { |index| squares[index].marker }.join
+    row.delete(Square::INITIAL_MARKER)
   end
 
-  def count_marker(line)
+  def marker_count(line, marker)
+    row = row_string(line)
+    row.count(marker)
+  end
+
+  def winning_row?(line)
     row = line.map { |index| squares[index].marker }
-    row.count(row.first)
+    row.count(row.first) == 3
   end
 end
 
@@ -237,8 +255,8 @@ class TTTGame
   end
 
   def computer_moves
-    defense = board.computer_defensive_move
-    choice = defense ? defense : board.unmarked_spaces.sample
+    optimal_move = board.find_optimal_space
+    choice = optimal_move ? optimal_move : board.unmarked_spaces.sample
     board[choice] = computer.marker
   end
 
