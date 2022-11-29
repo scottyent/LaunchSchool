@@ -198,6 +198,7 @@ class TTTGame
       break if %w(computer player).include?(pick)
       puts "That's not a valid choice"
     end
+    clear_screen
 
     @first_mover = pick.start_with?("c") ? @computer : @human
   end
@@ -212,7 +213,7 @@ class TTTGame
       current_player_moves
       display_board
       break if game_over?
-      clear_screen_and_display_board
+      clear_screen_and_display_board if first_players_turn
     end
   end
 
