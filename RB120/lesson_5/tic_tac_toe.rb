@@ -158,18 +158,20 @@ class TTTGame
   COMPUTER_MARKER = "O"
   TOURNAMENT_MAX = 5
 
-  attr_reader :board, :human, :computer, :first_player
+  attr_reader :board, :human, :computer, :first_players_turn, :first_mover
 
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
-    @first_player = true
+    @first_players_turn = true
+    @first_mover = nil
   end
 
   def play
     clear_screen
     display_welcome_message
+    user_picks_first_mover
     main_game
     display_goodbye_message
   end
@@ -188,6 +190,18 @@ class TTTGame
     end
   end
 
+  def user_picks_first_mover
+    pick = nil
+    loop do
+      puts "Who should go first? Computer/Player"
+      pick = gets.chomp.downcase
+      break if %w(computer player).include?(pick)
+      puts "That's not a valid choice"
+    end
+
+    @first_mover = pick.start_with?("c") ? @computer : @human
+  end
+
   def tournament_over?
     @human.games_won == TOURNAMENT_MAX || @computer.games_won == TOURNAMENT_MAX
   end
@@ -196,8 +210,9 @@ class TTTGame
   def player_move
     loop do
       current_player_moves
+      display_board
       break if game_over?
-      clear_screen_and_display_board if first_player
+      clear_screen_and_display_board
     end
   end
 
@@ -298,7 +313,7 @@ class TTTGame
 
   def reset
     board.reset
-    @first_player = true
+    @first_players_turn = true
     clear_screen
   end
 
@@ -312,8 +327,14 @@ class TTTGame
   end
 
   def current_player_moves
-    first_player ? human_moves : computer_moves
-    @first_player = !first_player
+    case first_mover
+    when @human
+      first_players_turn ? human_moves : computer_moves
+    when @computer
+      first_players_turn ? computer_moves : human_moves
+    end
+
+    @first_players_turn = !first_players_turn
   end
 end
 
