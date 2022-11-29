@@ -95,7 +95,7 @@ class Board
       end
     end
 
-    defense ? defense : offense
+    offense ? offense : defense
   end
 
   private
