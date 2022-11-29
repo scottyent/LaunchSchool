@@ -95,6 +95,10 @@ class Board
       end
     end
 
+    if squares[4].unmarked? && !defense && !offense
+      offense = 5
+    end
+
     offense ? offense : defense
   end
 
