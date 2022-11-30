@@ -13,43 +13,40 @@ class Board
   end
 
   def empty_board
-    arr = []
-    9.times { |_| arr << Square.new }
-    arr
+    new_board = Hash.new
+    (1..9).each { |space_num| new_board[space_num] = Square.new }
+    new_board
   end
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def draw
     puts "     |     |     "
-    puts "  #{squares[0]}  |  #{squares[1]}  |  #{squares[2]}"
+    puts "  #{squares[1]}  |  #{squares[2]}  |  #{squares[3]}"
     puts "     |     |     "
     puts "-----------------"
     puts "     |     |     "
-    puts "  #{squares[3]}  |  #{squares[4]}  |  #{squares[5]}"
+    puts "  #{squares[4]}  |  #{squares[5]}  |  #{squares[6]}"
     puts "     |     |     "
     puts "-----------------"
     puts "     |     |     "
-    puts "  #{squares[6]}  |  #{squares[7]}  |  #{squares[8]}"
+    puts "  #{squares[7]}  |  #{squares[8]}  |  #{squares[9]}"
     puts "     |     |     "
   end
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
 
   def []=(space, marker)
-    squares[space - 1].marker = marker
+    squares[space].marker = marker
   end
 
   def reset
     @squares = empty_board
   end
 
+  # Should return an array of numbers representing the free spaces
   def unmarked_spaces
-    open_spaces = []
-    squares.each_with_index do |square, index|
-      open_spaces << (index + 1) if square.unmarked?
-    end
-    open_spaces
+    squares.select { |space, square| square.unmarked? }.keys
   end
 
   def full?
@@ -63,9 +60,8 @@ class Board
   # returns winning marker or nil
   def winning_marker
     WINNING_LINES.each do |line|
-      line_index = line.map { |space_num| space_num - 1 }
-      if winning_row?(line_index)
-        choice = squares[line_index.first]
+      if winning_row?(line)
+        choice = squares[line.first]
         return choice.marker if choice.marked?
       end
     end
@@ -78,24 +74,22 @@ class Board
     offense = nil
 
     WINNING_LINES.each do |line|
-      line_index = line.map { |space_num| space_num - 1 }
-
       # Find an option for defense
-      if marker_count(line_index, TTTGame::HUMAN_MARKER) == 2
-        line_index.each do |index|
-          defense = (index + 1) if squares[index].unmarked?
+      if marker_count(line, TTTGame::HUMAN_MARKER) == 2
+        line.each do |space_num|
+          defense = space_num if squares[space_num].unmarked?
         end
       end
 
       # Find an option for offense
-      if marker_count(line_index, TTTGame::COMPUTER_MARKER) == 2
-        line_index.each do |index|
-          offense = (index + 1) if squares[index].unmarked?
+      if marker_count(line, TTTGame::COMPUTER_MARKER) == 2
+        line.each do |space_num|
+          offense = space_num if squares[space_num].unmarked?
         end
       end
     end
 
-    if squares[4].unmarked? && !defense && !offense
+    if squares[5].unmarked? && !defense && !offense
       offense = 5
     end
 
@@ -105,17 +99,17 @@ class Board
   private
 
   def row_string(line)
-    row = line.map { |index| squares[index].marker }.join
+    row = line.map { |space_num| squares[space_num].marker }.join
     row.delete(Square::INITIAL_MARKER)
   end
 
   def marker_count(line, marker)
-    row = row_string(line)
-    row.count(marker)
+    string_row = row_string(line)
+    string_row.count(marker)
   end
 
   def winning_row?(line)
-    row = line.map { |index| squares[index].marker }
+    row = line.map { |space| squares[space].marker }
     row.count(row.first) == 3
   end
 end
@@ -211,9 +205,8 @@ class TTTGame
   def player_move
     loop do
       current_player_moves
-      display_board
+      clear_screen_and_display_board
       break if game_over?
-      clear_screen_and_display_board if first_players_turn
     end
   end
 
