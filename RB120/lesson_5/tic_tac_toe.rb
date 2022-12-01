@@ -138,14 +138,16 @@ class Square
 end
 
 class Player
-  attr_accessor :games_won, :marker
+  attr_accessor :games_won, :marker, :name
 
   def initialize(marker)
     @marker = marker
     @games_won = 0
   end
+end
 
-  def self.human_pick_marker
+class Human < Player
+  def self.pick_marker
     marker = nil
     loop do
       puts 'What symbol do you want? You can choose X, Y, or any letter!'
@@ -156,25 +158,42 @@ class Player
     marker
   end
 
-  def self.computer_pick_marker
+  def ask_name
+    response = ''
+    loop do
+      puts "What's your name?"
+      response = gets.chomp.capitalize
+      break if !response.empty?
+    end
+    @name = response
+  end
+end
+
+class Computer < Player
+  def self.pick_marker
     return 'X' if TTTGame::HUMAN_MARKER == 'O'
     'O'
   end
+
+  def set_name
+    @name = %w(Hal R2D2 Bobby IronMan Pi).sample
+  end
 end
+
 
 # Orchestration Engine
 
 class TTTGame
-  HUMAN_MARKER = Player.human_pick_marker
-  COMPUTER_MARKER = Player.computer_pick_marker
+  HUMAN_MARKER = Human.pick_marker
+  COMPUTER_MARKER = Computer.pick_marker
   TOURNAMENT_MAX = 5
 
   attr_reader :board, :human, :computer, :first_players_turn, :first_mover
 
   def initialize
     @board = Board.new
-    @human = Player.new(HUMAN_MARKER)
-    @computer = Player.new(COMPUTER_MARKER)
+    @human = Human.new(HUMAN_MARKER)
+    @computer = Computer.new(COMPUTER_MARKER)
     @first_players_turn = true
     @first_mover = nil
   end
@@ -182,6 +201,7 @@ class TTTGame
   def play
     clear_screen
     display_welcome_message
+    set_player_names
     user_picks_first_mover
     main_game
     display_goodbye_message
@@ -201,17 +221,22 @@ class TTTGame
     end
   end
 
+  def set_player_names
+    @human.ask_name
+    @computer.set_name
+  end
+
   def user_picks_first_mover
     pick = nil
     loop do
-      puts "Who should go first? Computer/Player"
+      puts "Who should go first? #{@human.name} or #{@computer.name}"
       pick = gets.chomp.downcase
-      break if %w(computer player).include?(pick)
+      break if [@human.name.downcase, @computer.name.downcase].include?(pick)
       puts "That's not a valid choice"
     end
     clear_screen
 
-    @first_mover = pick.start_with?("c") ? @computer : @human
+    @first_mover = (pick == @computer.name.downcase) ? @computer : @human
   end
 
   def tournament_over?
@@ -290,7 +315,9 @@ class TTTGame
   end
 
   def display_tournament_score
-    puts "You: #{@human.games_won} | Computer: #{@computer.games_won}"
+    puts "#{human.name}: #{@human.games_won} | " \
+    "#{computer.name}: #{@computer.games_won}"
+
   end
 
   def display_result
@@ -302,7 +329,7 @@ class TTTGame
       puts "You won!"
     when COMPUTER_MARKER
       @computer.games_won += 1
-      puts "Computer won."
+      puts "#{computer.name} won."
     else
       puts "It's a tie!"
     end
