@@ -46,7 +46,7 @@ class Board
 
   # Should return an array of numbers representing the free spaces
   def unmarked_spaces
-    squares.select { |space, square| square.unmarked? }.keys
+    squares.select { |_, square| square.unmarked? }.keys
   end
 
   def full?
@@ -89,11 +89,12 @@ class Board
       end
     end
 
+
     if squares[5].unmarked? && !defense && !offense
       offense = 5
     end
 
-    offense ? offense : defense
+    offense || defense
   end
 
   private
@@ -147,10 +148,7 @@ class Player
   def self.human_pick_marker
     marker = nil
     loop do
-      puts <<-MSG
-      What symbol do you want?
-      You can choose X, Y, or any letter you want!
-      MSG
+      puts 'What symbol do you want? You can choose X, Y, or any letter!'
       marker = gets.chomp.upcase
       break if ("A".."Z").include?(marker)
       puts "I'm sorry that's not a valid choice"
@@ -220,7 +218,6 @@ class TTTGame
     @human.games_won == TOURNAMENT_MAX || @computer.games_won == TOURNAMENT_MAX
   end
 
-
   def player_move
     loop do
       current_player_moves
@@ -288,14 +285,13 @@ class TTTGame
 
   def computer_moves
     optimal_move = board.find_optimal_space
-    choice = optimal_move ? optimal_move : board.unmarked_spaces.sample
+    choice = optimal_move || board.unmarked_spaces.sample
     board[choice] = computer.marker
   end
 
   def display_tournament_score
     puts "You: #{@human.games_won} | Computer: #{@computer.games_won}"
   end
-
 
   def display_result
     clear_screen_and_display_board
@@ -353,33 +349,3 @@ end
 
 game = TTTGame.new
 game.play
-
-
-=begin
-My own short description of the game:
-starting with an empty 3x3 board, the first player chooses where to put an x.
-The second player then decides where to put an O, and they alternate turns
-until either a tie, or one player has 3 in a row of their marker.
-
-Their description (somehwat similar but maybe a bit more succinct):
-Tic Tac Toe is a 2-player board game played on a 3x3 grid. Players take turns
-marking a square. The first player to mark 3 squares in a row wins.
-
-Nouns:
-Player
-Board
-Square
-Grid
-
-Verbs:
-play
-mark
-
-Cleaned up:
-Board
-Square
-Player
-- play
-- mark
-
-=end
