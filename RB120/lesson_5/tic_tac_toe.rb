@@ -143,13 +143,32 @@ class Player
     @marker = marker
     @games_won = 0
   end
+
+  def self.human_pick_marker
+    marker = nil
+    loop do
+      puts <<-MSG
+      What symbol do you want?
+      You can choose X, Y, or any letter you want!
+      MSG
+      marker = gets.chomp.upcase
+      break if ("A".."Z").include?(marker)
+      puts "I'm sorry that's not a valid choice"
+    end
+    marker
+  end
+
+  def self.computer_pick_marker
+    return 'X' if TTTGame::HUMAN_MARKER == 'O'
+    'O'
+  end
 end
 
 # Orchestration Engine
 
 class TTTGame
-  HUMAN_MARKER = "X"
-  COMPUTER_MARKER = "O"
+  HUMAN_MARKER = Player.human_pick_marker
+  COMPUTER_MARKER = Player.computer_pick_marker
   TOURNAMENT_MAX = 5
 
   attr_reader :board, :human, :computer, :first_players_turn, :first_mover
