@@ -89,7 +89,6 @@ class Board
       end
     end
 
-
     if squares[5].unmarked? && !defense && !offense
       offense = 5
     end
@@ -180,9 +179,7 @@ class Computer < Player
   end
 end
 
-
 # Orchestration Engine
-
 class TTTGame
   HUMAN_MARKER = Human.pick_marker
   COMPUTER_MARKER = Computer.pick_marker
@@ -236,7 +233,7 @@ class TTTGame
     end
     clear_screen
 
-    @first_mover = (pick == @computer.name.downcase) ? @computer : @human
+    @first_mover = pick == @computer.name.downcase ? @computer : @human
   end
 
   def tournament_over?
@@ -316,8 +313,7 @@ class TTTGame
 
   def display_tournament_score
     puts "#{human.name}: #{@human.games_won} | " \
-    "#{computer.name}: #{@computer.games_won}"
-
+         "#{computer.name}: #{@computer.games_won}"
   end
 
   def display_result
