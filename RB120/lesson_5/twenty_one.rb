@@ -94,7 +94,6 @@ class TwentyOneGame
   def start
     display_welcome_message
     deal_cards
-    binding.pry
     show_initial_cards
     # check_for_21
     # player_turn until busted? || stay
