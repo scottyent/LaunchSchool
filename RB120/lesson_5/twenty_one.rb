@@ -1,7 +1,18 @@
 require 'pry'
 require 'pry-byebug'
 
+# TODO
+# - uncomment the sleep lines when ready to play!
+
+
 module Hand
+
+  def display_cards
+    values = []
+    hand.each { |card| values << card.value }
+    values.join(', ')
+  end
+
   def hit
 
   end
@@ -11,7 +22,38 @@ module Hand
   end
 
   def total
-    # mechanism for summing their hand
+    values = []
+    aces = []
+    hand.each do |card|
+      if card.value == 'Ace'
+        aces << card.value
+      elsif %w(Jack Queen King).include?(card.value)
+        values << 10
+      else
+        values << card.value.to_i
+      end
+
+      if !aces.empty?
+        values = adjust_for_aces(values, aces)
+      end
+    end
+
+    values.sum
+  end
+
+  def adjust_for_aces(current_values, ace_cards)
+    # Checks each ace, decides if should be 1 or 11, and adds that to the values
+    ace_cards.each do |ace|
+      current_total = current_values.sum
+
+      if (current_total + 11) > 21
+        current_values << 1
+      else
+        current_values << 11
+      end
+    end
+
+    current_values
   end
 
   def busted?
@@ -25,7 +67,7 @@ class Player
   include Hand
 
   def initialize
-    @name = ask_name
+    @name = 'Player'
     @hand = []
   end
 
@@ -75,6 +117,8 @@ class Deck
 end
 
 class Card
+  attr_accessor :suit, :value
+
   def initialize(suit, number)
     @suit = suit
     @value = number
@@ -92,9 +136,9 @@ class TwentyOneGame
   end
 
   def start
-    display_welcome_message
-    deal_cards
-    show_initial_cards
+    display_welcome_message # DONE
+    deal_cards # DONE
+    show_initial_cards # DONE
     # check_for_21
     # player_turn until busted? || stay
     # dealer_turn until busted? || minumum
@@ -108,13 +152,29 @@ class TwentyOneGame
     end
   end
 
+  def show_initial_cards
+    clear_screen
+    puts "Dealing your cards..."
+    divider
+    # sleep 1
+    puts "Dealer: #{dealer.hand[0].value}"
+    puts "You: #{player.display_cards} -> Total: #{player.total}"
+    divider
+  end
+
   def display_welcome_message
     clear_screen
     puts "Welcome to 21!"
+    divider
+    # sleep 1
   end
 
   def clear_screen
     system 'clear'
+  end
+
+  def divider
+    puts "-" * 14
   end
 end
 
