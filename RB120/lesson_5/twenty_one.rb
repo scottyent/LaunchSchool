@@ -15,8 +15,8 @@ module Hand
     nil
   end
 
-  def hit
-
+  def hit(deck)
+    hand << deck.deal
   end
 
   def stay
