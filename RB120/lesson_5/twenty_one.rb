@@ -19,10 +19,6 @@ module Hand
     hand << deck.deal
   end
 
-  def stay
-
-  end
-
   def total
     values = []
     aces = []
@@ -59,18 +55,20 @@ module Hand
   end
 
   def busted?
-    hand.total > 21
+    total > 21
   end
 end
 
 class Player
   attr_reader :name, :hand
+  attr_accessor :stay
 
   include Hand
 
   def initialize
     @name = 'Player'
     @hand = []
+    @stay = false
   end
 
   def ask_name
@@ -171,10 +169,31 @@ class TwentyOneGame
     deal_cards
     show_initial_cards
     initial_21_check
-    # player_turn until busted? || stay
+    player_turn until player.busted? || player.stay
     # dealer_turn until busted? || minumum
     # show_result
   end
+
+  def player_turn
+    move = nil
+    loop do
+      puts "Do you want to hit, or stay? (h/s)"
+      move = gets.chomp.downcase
+      break if %w(hit stay h s).include?(move)
+      puts "That's not a valid choice"
+    end
+
+    if %w(hit h).include?(move)
+      player.hit(game_deck)
+      clear_screen
+      player.display_cards
+      puts "Total: #{player.total}"
+    else
+      player.stay = true
+      puts "You've chosen to stay. Dealers turn!"
+    end
+  end
+
 
   def initial_21_check
     if dealer.total == 21
