@@ -5,12 +5,14 @@ require 'pry-byebug'
 # - uncomment the sleep lines when ready to play!
 
 
-module Hand
 
+module Hand
   def display_cards
-    values = []
-    hand.each { |card| values << card.value }
-    values.join(', ')
+    hand.each do |card|
+      card.draw
+    end
+
+    nil
   end
 
   def hit
@@ -25,9 +27,9 @@ module Hand
     values = []
     aces = []
     hand.each do |card|
-      if card.value == 'Ace'
+      if card.value == 'A'
         aces << card.value
-      elsif %w(Jack Queen King).include?(card.value)
+      elsif %w(J Q K).include?(card.value)
         values << 10
       else
         values << card.value.to_i
@@ -100,8 +102,8 @@ class Deck
 
   def new_deck
     fresh_deck = []
-    suits = %w(Heats Diamonds Spades Clubs)
-    values = %w(2 3 4 5 6 7 8 9 10 Jack Queen King Ace)
+    suits = %w(Hearts Diamonds Spades Clubs)
+    values = %w(2 3 4 5 6 7 8 9 10 J Q K A)
     suits.each do |suit|
       values.each { |value| fresh_deck << Card.new(suit, value) }
     end
@@ -123,6 +125,35 @@ class Card
     @suit = suit
     @value = number
   end
+
+  def draw
+    horizontal = "--------------"
+    num_line = "|#{value}" +
+              "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
+    blank_line = "|#{' ' * (horizontal.size - 2)}|"
+
+    puts horizontal
+    puts num_line
+    puts blank_line
+    puts blank_line
+    puts "|     #{convert_suit_to_symbol(suit)}      |"
+    puts blank_line
+    puts blank_line
+    puts blank_line
+    puts num_line
+    puts horizontal
+  end
+
+  def convert_suit_to_symbol(string_suit)
+    symbols = {
+      'Hearts' => "\u{02665}",
+      'Diamonds' => "\u{02666}",
+      'Spades' => "\u{02660}",
+      'Clubs' => "\u{02663}"
+    }
+
+    symbols[string_suit]
+  end
 end
 
 # Game Orchestration
@@ -137,12 +168,20 @@ class TwentyOneGame
 
   def start
     display_welcome_message # DONE
-    deal_cards # DONE
-    show_initial_cards # DONE
-    # check_for_21
+    deal_cards
+    show_initial_cards
+    initial_21_check
     # player_turn until busted? || stay
     # dealer_turn until busted? || minumum
     # show_result
+  end
+
+  def initial_21_check
+    if dealer.total == 21
+      puts "Dealer has blackjack. You lose. "
+    elsif player.total == 21
+      puts "You have blackjack! You win!"
+    end
   end
 
   def deal_cards
@@ -157,8 +196,10 @@ class TwentyOneGame
     puts "Dealing your cards..."
     divider
     # sleep 1
-    puts "Dealer: #{dealer.hand[0].value}"
-    puts "You: #{player.display_cards} -> Total: #{player.total}"
+    puts "Dealer:"
+    puts "#{dealer.hand[0].draw}"
+    puts "You:"
+    puts "#{player.display_cards} Total: #{player.total}"
     divider
   end
 
@@ -239,5 +280,5 @@ deck
 game
 - start
 
-alright, ready to spike and start checking out these structures
+alright, ready to spike and start checK out these structures
 =end
