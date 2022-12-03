@@ -59,7 +59,7 @@ module Hand
   end
 
   def busted?
-
+    hand.total > 21
   end
 end
 
