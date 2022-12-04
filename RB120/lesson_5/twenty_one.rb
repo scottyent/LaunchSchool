@@ -3,10 +3,6 @@ require 'pry-byebug'
 
 # TODO
 # - uncomment the sleep lines when ready to play!
-# - Ok I made a flowchart, go through it and see how the logic of the game
-# lines up with how I actually set it up
-
-
 
 module Hand
   def display_cards(hide_second:false)
@@ -62,19 +58,17 @@ module Hand
 
   def busted?
     if total > 21
-      # I know I shouldn't do this with return and print, just trying to get
-      # the overall logic down
-      puts "Busted. Game Over."
+      @busted = true
       return true
+    else
+      return false
     end
-
-    false
   end
 end
 
 class Player
   attr_reader :name, :hand
-  attr_accessor :stay
+  attr_accessor :stay, :busted
 
   include Hand
 
@@ -82,6 +76,7 @@ class Player
     @name = 'Player'
     @hand = []
     @stay = false
+    @busted = false
   end
 
   def ask_name
@@ -97,10 +92,11 @@ end
 class Dealer
   include Hand
 
-  attr_accessor :hand
+  attr_accessor :hand, :busted
 
   def initialize
     @hand = []
+    @busted = false
   end
 end
 
@@ -185,18 +181,61 @@ class TwentyOneGame
       deal_cards
       show_initial_cards
       initial_21_check
-      break if game_over?
+      break if game_over
       player_turn until player.busted? || player.stay
-      break if game_over?
+      break if player.busted
       dealer_turn
       break
-      # show_result
+    end
+
+    show_result
+  end
+
+  def show_result
+    clear_screen
+    if player.total == 21 || dealer.total == 21
+      if player.total == 21 && dealer.total == 21
+        puts "It's a tie! You both got 21."
+      elsif dealer.total == 21
+        puts "You lose! The dealer has 21."
+      elsif player.total == 21
+        puts "Congrats! You won with 21."
+      end
+  elsif player.busted || dealer.busted
+      puts player.busted ? "You busted. Better luck next time." : "The dealer busted. You win!"
+  else
+    if dealer.total == player.total
+      puts "It's a tie"
+    elsif dealer.total > player.total
+      puts "Dealer wins."
+    else
+      puts "You win!"
     end
   end
 
-  def game_over?
-    player.busted? || game_over
+    divider
+    puts "The final cards are:"
+    divider
+    puts "Dealer"
+    dealer.display_cards
+    divider
+    puts "Your cards"
+    player.display_cards
   end
+
+    # Possible outcomes, in order of outcome
+    # Dealer has 21, player does too -> tie
+    # Dealer has 21, player doesn't -> dealer wins
+    # player has 21, dealer doesn't -> player wins
+
+    # If player busted -> dealer wins
+    # if dealer busted and player didn't bust -> player wins
+
+    # Lastly
+    # totals compared, bigger one wins
+
+
+
 
   def player_turn
     move = nil
@@ -224,21 +263,19 @@ class TwentyOneGame
 
   def dealer_turn
     puts "Dealer Total: #{dealer.total}"
-    dealer.display_cards(hide_second:false)
+    dealer.display_cards
+    sleep 2
 
-    until minimum? || dealer.busted?
-      clear_screen
+    until dealer.busted? || minimum?
+      puts "Dealer draws another card..."
       sleep 1
+      clear_screen
       dealer.hit(game_deck)
       puts "Dealer Total: #{dealer.total}"
       dealer.display_cards(hide_second:false)
       sleep 2
     end
-
-    puts "Dealer Total: #{dealer.total}"
   end
-
-
 
   def initial_21_check
     if dealer.total == 21
@@ -261,7 +298,8 @@ class TwentyOneGame
     clear_screen
     puts "Dealing your cards..."
     divider
-    # sleep 1
+    sleep 1
+    clear_screen
     puts "Dealer:"
     puts "#{dealer.display_cards(hide_second:true)}"
     puts "You:"
@@ -273,7 +311,7 @@ class TwentyOneGame
     clear_screen
     puts "Welcome to 21!"
     divider
-    # sleep 1
+    sleep 1
   end
 
   def clear_screen
