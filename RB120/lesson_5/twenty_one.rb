@@ -3,13 +3,19 @@ require 'pry-byebug'
 
 # TODO
 # - uncomment the sleep lines when ready to play!
+# - Ok I made a flowchart, go through it and see how the logic of the game
+# lines up with how I actually set it up
 
 
 
 module Hand
-  def display_cards
-    hand.each do |card|
-      card.draw
+  def display_cards(hide_second:false)
+    if hide_second
+      hand[0].draw
+    else
+      hand.each do |card|
+        card.draw
+      end
     end
 
     nil
@@ -55,7 +61,14 @@ module Hand
   end
 
   def busted?
-    total > 21
+    if total > 21
+      # I know I shouldn't do this with return and print, just trying to get
+      # the overall logic down
+      puts "Busted. Game Over."
+      return true
+    end
+
+    false
   end
 end
 
@@ -125,21 +138,22 @@ class Card
   end
 
   def draw
-    horizontal = "--------------"
-    num_line = "|#{value}" +
-              "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
-    blank_line = "|#{' ' * (horizontal.size - 2)}|"
+    p "#{convert_suit_to_symbol(suit)}#{value}"
+    # horizontal = "--------------"
+    # num_line = "|#{value}" +
+    #           "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
+    # blank_line = "|#{' ' * (horizontal.size - 2)}|"
 
-    puts horizontal
-    puts num_line
-    puts blank_line
-    puts blank_line
-    puts "|     #{convert_suit_to_symbol(suit)}      |"
-    puts blank_line
-    puts blank_line
-    puts blank_line
-    puts num_line
-    puts horizontal
+    # puts horizontal
+    # puts num_line
+    # puts blank_line
+    # puts blank_line
+    # puts "|     #{convert_suit_to_symbol(suit)}      |"
+    # puts blank_line
+    # puts blank_line
+    # puts blank_line
+    # puts num_line
+    # puts horizontal
   end
 
   def convert_suit_to_symbol(string_suit)
@@ -156,22 +170,32 @@ end
 
 # Game Orchestration
 class TwentyOneGame
-  attr_accessor :player, :dealer, :game_deck
+  attr_accessor :player, :dealer, :game_deck, :game_over
 
   def initialize
     @player = Player.new
     @dealer = Dealer.new
     @game_deck = Deck.new
+    @game_over = false
   end
 
   def start
-    display_welcome_message # DONE
-    deal_cards
-    show_initial_cards
-    initial_21_check
-    player_turn until player.busted? || player.stay
-    # dealer_turn until busted? || minumum
-    # show_result
+      display_welcome_message # DONE
+    loop do
+      deal_cards
+      show_initial_cards
+      initial_21_check
+      break if game_over?
+      player_turn until player.busted? || player.stay
+      break if game_over?
+      dealer_turn
+      break
+      # show_result
+    end
+  end
+
+  def game_over?
+    player.busted? || game_over
   end
 
   def player_turn
@@ -194,11 +218,34 @@ class TwentyOneGame
     end
   end
 
+  def minimum?
+    dealer.total >= 17
+  end
+
+  def dealer_turn
+    puts "Dealer Total: #{dealer.total}"
+    dealer.display_cards(hide_second:false)
+
+    until minimum? || dealer.busted?
+      clear_screen
+      sleep 1
+      dealer.hit(game_deck)
+      puts "Dealer Total: #{dealer.total}"
+      dealer.display_cards(hide_second:false)
+      sleep 2
+    end
+
+    puts "Dealer Total: #{dealer.total}"
+  end
+
+
 
   def initial_21_check
     if dealer.total == 21
-      puts "Dealer has blackjack. You lose. "
+      game_over = true
+      puts "Dealer has blackjack. You lose."
     elsif player.total == 21
+      game_over = true
       puts "You have blackjack! You win!"
     end
   end
@@ -216,7 +263,7 @@ class TwentyOneGame
     divider
     # sleep 1
     puts "Dealer:"
-    puts "#{dealer.hand[0].draw}"
+    puts "#{dealer.display_cards(hide_second:true)}"
     puts "You:"
     puts "#{player.display_cards} Total: #{player.total}"
     divider
