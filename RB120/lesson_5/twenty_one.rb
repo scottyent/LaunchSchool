@@ -2,12 +2,7 @@ require 'pry'
 require 'pry-byebug'
 
 # TODO
-# - uncomment the sleep lines when ready to play!
-#
-# - reduce the complexity of show_result
-# - play again function works once, I think - check why not continuous
-# - also, where to put show_result? it should be after each game, and right now
-# it's after all games (if you play again)
+# - reduce the complexity of show_result?
 
 module Hand
   def display_cards(hide_second:false)
@@ -181,7 +176,8 @@ class TwentyOneGame
   end
 
   def start
-      display_welcome_message # DONE
+    display_welcome_message
+
     loop do
       deal_cards
       show_initial_cards
@@ -190,11 +186,10 @@ class TwentyOneGame
       player_turn until player.busted? || player.stay
       break if player.busted
       dealer_turn until dealer.busted? || minimum?
+      show_result
       break unless play_again?
       reset_game
     end
-
-    show_result
   end
 
   def show_result
@@ -279,6 +274,7 @@ class TwentyOneGame
     else
       player.stay = true
       puts "You've chosen to stay. Dealers turn!"
+      sleep 1
     end
   end
 
@@ -287,9 +283,10 @@ class TwentyOneGame
   end
 
   def dealer_turn
+    clear_screen
     puts "Dealer Total: #{dealer.total}"
     dealer.display_cards
-    # sleep 2
+    sleep 1
 
     puts "Dealer draws another card..."
     sleep 1
@@ -297,15 +294,15 @@ class TwentyOneGame
     dealer.hit(game_deck)
     puts "Dealer Total: #{dealer.total}"
     dealer.display_cards(hide_second:false)
-    # sleep 2
+    sleep 1
   end
 
   def initial_21_check
     if dealer.total == 21
-      game_over = true
+      @game_over = true
       puts "Dealer has blackjack. You lose."
     elsif player.total == 21
-      game_over = true
+      @game_over = true
       puts "You have blackjack! You win!"
     end
   end
@@ -321,7 +318,7 @@ class TwentyOneGame
     clear_screen
     puts "Dealing your cards..."
     divider
-    # sleep 1
+    sleep 1
     clear_screen
     puts "Dealer:"
     puts "#{dealer.display_cards(hide_second:true)}"
@@ -334,7 +331,7 @@ class TwentyOneGame
     clear_screen
     puts "Welcome to 21!"
     divider
-    # sleep 1
+    sleep 1
   end
 
   def clear_screen
