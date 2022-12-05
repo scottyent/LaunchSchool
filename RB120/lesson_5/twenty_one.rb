@@ -69,7 +69,7 @@ class Deck
 end
 
 module Hand
-  def display_cards(hide_second:false)
+  def display_cards(hide_second: false)
     if hide_second
       hand[0].draw
     else
@@ -107,7 +107,7 @@ module Hand
 
   def adjust_for_aces(current_values, ace_cards)
     # Checks each ace, decides if should be 1 or 11, and adds that to the values
-    ace_cards.each do |ace|
+    ace_cards.each do |_|
       current_total = current_values.sum
 
       if (current_total + 11) > 21
@@ -123,9 +123,9 @@ module Hand
   def busted?
     if total > 21
       @busted = true
-      return true
+      true
     else
-      return false
+      false
     end
   end
 end
@@ -179,7 +179,6 @@ class TwentyOneGame
     display_welcome_message
     loop do
       loop do
-        binding.pry
         deal_cards
         show_initial_cards
         initial_21_check
@@ -251,7 +250,6 @@ class TwentyOneGame
     @game_over = false
   end
 
-
   def player_turn
     move = nil
     loop do
@@ -288,7 +286,7 @@ class TwentyOneGame
     clear_screen
     dealer.hit(game_deck)
     puts "Dealer Total: #{dealer.total}"
-    dealer.display_cards(hide_second:false)
+    dealer.display_cards(hide_second: false)
     sleep 1
   end
 
@@ -316,10 +314,10 @@ class TwentyOneGame
     sleep 1
     clear_screen
     puts "--- Dealer ---"
-    puts "#{dealer.display_cards(hide_second:true)}"
+    dealer.display_cards(hide_second: true)
     puts "--- Your cards ---"
-    puts "#{player.display_cards}" \
-        "--- Total: #{player.total} ---"
+    player.display_cards
+    puts "--- Total: #{player.total} ---"
     divider
   end
 
@@ -339,65 +337,3 @@ class TwentyOneGame
 end
 
 TwentyOneGame.new.start
-
-
-
-
-=begin
-Description of the game written out.
-
-21 is a card game that is played with a deck of 52 cards. The player and the
-dealer are each dealt 2 card, with the players cards being visible, and the
-dealers cards showing the 2nd card dealt. The player can then decide to hit
-or stay (add to or keep current hand), with the goal of getting as close to 21
-as possible and/or higher than the dealer. The dealer goes after the player,
-and can hit until it reaches at least 17. Anything over 21 for either is an
-immediate loss.
-
-so in tha analysis, the nouns that pop out to be as repeated often are:
-- Player
-- Dealer
-- Cards/deck
-
-The verbs that pop out at me are:
-- Hit
-- Stay
-- Deal
-
-Ok lets see what the official LaunchSchool answer is:
-Description:
-Twenty-One is a card game consisting of a dealer and a player, where the participants try to get as close to 21 as possible without going over.
-
-Here is an overview of the game:
-- Both participants are initially dealt 2 cards from a 52-card deck.
-- The player takes the first turn, and can "hit" or "stay".
-- If the player busts, he loses. If he stays, it's the dealer's turn.
-- The dealer must hit until his cards add up to at least 17.
-- If he busts, the player wins. If both player and dealer stays, then the highest total wins.
-- If both totals are equal, then it's a tie, and nobody wins.
-
-Nouns: card, player, dealer, participant, deck, game, total
-Verbs: deal, hit, stay, busts
-
-So I'll take a crack at organizing their version with the verbs:
-
-card
-player
--hit
--stay
--busts
--total
-dealer
--hit
--stay
--busts
--total
--deal (here or in deck?)
-participant
-deck
-- deal (here or in dealer?)
-game
-- start
-
-alright, ready to spike and start checK out these structures
-=end
