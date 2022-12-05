@@ -1,9 +1,3 @@
-require 'pry'
-require 'pry-byebug'
-
-# TODO
-# - reduce the complexity of show_result?
-
 class Card
   attr_accessor :suit, :value
 
@@ -16,7 +10,7 @@ class Card
     puts "=> #{convert_suit_to_symbol(suit)}#{value}"
     # horizontal = "--------------"
     # num_line = "|#{value}" +
-    #           "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
+    #         "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
     # blank_line = "|#{' ' * (horizontal.size - 2)}|"
 
     # puts horizontal
@@ -73,12 +67,10 @@ module Hand
     if hide_second
       hand[0].draw
     else
-      hand.each do |card|
-        card.draw
-      end
+      hand.each(&:draw)
     end
 
-    nil
+    puts "--- Total: #{total} ---"
   end
 
   def hit(deck)
@@ -110,11 +102,7 @@ module Hand
     ace_cards.each do |_|
       current_total = current_values.sum
 
-      if (current_total + 11) > 21
-        current_values << 1
-      else
-        current_values << 11
-      end
+      current_values << (current_total + 11) > 21 ? 1 : 11
     end
 
     current_values
@@ -205,7 +193,11 @@ class TwentyOneGame
         puts "Congrats! You won with 21."
       end
     elsif player.busted || dealer.busted
-      puts player.busted ? "You busted. Better luck next time." : "The dealer busted. You win!"
+      if player.busted
+        puts "You busted. Better luck next time."
+      else
+        puts "The dealer busted. You win!"
+      end
     else
       if dealer.total == player.total
         puts "It's a tie"
@@ -221,11 +213,9 @@ class TwentyOneGame
     divider
     puts "--- Dealer ---"
     dealer.display_cards
-    puts "Total: #{dealer.total}"
     divider
     puts "--- Your cards ---"
     player.display_cards
-    puts "Total: #{player.total}"
   end
 
   def play_again?
@@ -277,7 +267,6 @@ class TwentyOneGame
 
   def dealer_turn
     clear_screen
-    puts "Dealer Total: #{dealer.total}"
     dealer.display_cards
     sleep 1
 
@@ -285,7 +274,6 @@ class TwentyOneGame
     sleep 1
     clear_screen
     dealer.hit(game_deck)
-    puts "Dealer Total: #{dealer.total}"
     dealer.display_cards(hide_second: false)
     sleep 1
   end
@@ -310,14 +298,13 @@ class TwentyOneGame
   def show_initial_cards
     clear_screen
     puts "Dealing your cards..."
-    divider
     sleep 1
     clear_screen
     puts "--- Dealer ---"
     dealer.display_cards(hide_second: true)
+    divider
     puts "--- Your cards ---"
     player.display_cards
-    puts "--- Total: #{player.total} ---"
     divider
   end
 
@@ -332,7 +319,7 @@ class TwentyOneGame
   end
 
   def divider
-    puts "-" * 14
+    puts
   end
 end
 
