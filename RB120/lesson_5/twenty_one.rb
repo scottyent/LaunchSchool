@@ -3,6 +3,10 @@ require 'pry-byebug'
 
 # TODO
 # - uncomment the sleep lines when ready to play!
+#
+# - reduce the complexity of show_result
+# - perhaps move dealer loop to dealer.busted? || minimum? in main game loop
+# - play again function works once, I think - check why not continuous
 
 module Hand
   def display_cards(hide_second:false)
@@ -185,7 +189,8 @@ class TwentyOneGame
       player_turn until player.busted? || player.stay
       break if player.busted
       dealer_turn
-      break
+      break unless play_again?
+      reset_game
     end
 
     show_result
@@ -217,9 +222,11 @@ class TwentyOneGame
     puts "The final cards are:"
     divider
     puts "Dealer"
+    puts "Total: #{dealer.total}"
     dealer.display_cards
     divider
     puts "Your cards"
+    puts "Total: #{player.total}"
     player.display_cards
   end
 
@@ -235,6 +242,23 @@ class TwentyOneGame
     # totals compared, bigger one wins
 
 
+  def play_again?
+    answer = nil
+    loop do
+      puts "Do you want to play again? (y/n)"
+      answer = gets.chomp.downcase
+      break if %w(y n).include?(answer)
+      puts "That's not a valid response."
+    end
+
+    answer == 'y'
+  end
+
+  def reset_game
+    @game_deck = Deck.new
+    @player = Player.new
+    @dealer = Dealer.new
+  end
 
 
   def player_turn
@@ -264,7 +288,7 @@ class TwentyOneGame
   def dealer_turn
     puts "Dealer Total: #{dealer.total}"
     dealer.display_cards
-    sleep 2
+    # sleep 2
 
     until dealer.busted? || minimum?
       puts "Dealer draws another card..."
@@ -273,7 +297,7 @@ class TwentyOneGame
       dealer.hit(game_deck)
       puts "Dealer Total: #{dealer.total}"
       dealer.display_cards(hide_second:false)
-      sleep 2
+      # sleep 2
     end
   end
 
@@ -298,7 +322,7 @@ class TwentyOneGame
     clear_screen
     puts "Dealing your cards..."
     divider
-    sleep 1
+    # sleep 1
     clear_screen
     puts "Dealer:"
     puts "#{dealer.display_cards(hide_second:true)}"
@@ -311,7 +335,7 @@ class TwentyOneGame
     clear_screen
     puts "Welcome to 21!"
     divider
-    sleep 1
+    # sleep 1
   end
 
   def clear_screen
