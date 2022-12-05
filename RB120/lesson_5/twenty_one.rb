@@ -5,8 +5,9 @@ require 'pry-byebug'
 # - uncomment the sleep lines when ready to play!
 #
 # - reduce the complexity of show_result
-# - perhaps move dealer loop to dealer.busted? || minimum? in main game loop
 # - play again function works once, I think - check why not continuous
+# - also, where to put show_result? it should be after each game, and right now
+# it's after all games (if you play again)
 
 module Hand
   def display_cards(hide_second:false)
@@ -36,10 +37,10 @@ module Hand
       else
         values << card.value.to_i
       end
+    end
 
-      if !aces.empty?
-        values = adjust_for_aces(values, aces)
-      end
+    if !aces.empty?
+      values = adjust_for_aces(values, aces)
     end
 
     values.sum
@@ -188,7 +189,7 @@ class TwentyOneGame
       break if game_over
       player_turn until player.busted? || player.stay
       break if player.busted
-      dealer_turn
+      dealer_turn until dealer.busted? || minimum?
       break unless play_again?
       reset_game
     end
@@ -290,15 +291,13 @@ class TwentyOneGame
     dealer.display_cards
     # sleep 2
 
-    until dealer.busted? || minimum?
-      puts "Dealer draws another card..."
-      sleep 1
-      clear_screen
-      dealer.hit(game_deck)
-      puts "Dealer Total: #{dealer.total}"
-      dealer.display_cards(hide_second:false)
-      # sleep 2
-    end
+    puts "Dealer draws another card..."
+    sleep 1
+    clear_screen
+    dealer.hit(game_deck)
+    puts "Dealer Total: #{dealer.total}"
+    dealer.display_cards(hide_second:false)
+    # sleep 2
   end
 
   def initial_21_check
