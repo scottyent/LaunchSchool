@@ -4,6 +4,70 @@ require 'pry-byebug'
 # TODO
 # - reduce the complexity of show_result?
 
+class Card
+  attr_accessor :suit, :value
+
+  def initialize(suit, number)
+    @suit = suit
+    @value = number
+  end
+
+  def draw
+    p "#{convert_suit_to_symbol(suit)}#{value}"
+    # horizontal = "--------------"
+    # num_line = "|#{value}" +
+    #           "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
+    # blank_line = "|#{' ' * (horizontal.size - 2)}|"
+
+    # puts horizontal
+    # puts num_line
+    # puts blank_line
+    # puts blank_line
+    # puts "|     #{convert_suit_to_symbol(suit)}      |"
+    # puts blank_line
+    # puts blank_line
+    # puts blank_line
+    # puts num_line
+    # puts horizontal
+  end
+
+  def convert_suit_to_symbol(string_suit)
+    symbols = {
+      'Hearts' => "\u{02665}",
+      'Diamonds' => "\u{02666}",
+      'Spades' => "\u{02660}",
+      'Clubs' => "\u{02663}"
+    }
+
+    symbols[string_suit]
+  end
+end
+
+class Deck
+  attr_accessor :cards
+
+  def initialize
+    @cards = new_deck
+  end
+
+  def new_deck
+    fresh_deck = []
+    suits = %w(Hearts Diamonds Spades Clubs)
+    values = %w(2 3 4 5 6 7 8 9 10 J Q K A)
+    suits.each do |suit|
+      values.each { |value| fresh_deck << Card.new(suit, value) }
+    end
+
+    fresh_deck
+  end
+
+  def deal
+    card = cards.sample
+    cards.delete(card)
+    card
+  end
+end
+
 module Hand
   def display_cards(hide_second:false)
     if hide_second
@@ -73,20 +137,20 @@ class Player
   include Hand
 
   def initialize
-    @name = 'Player'
     @hand = []
     @stay = false
     @busted = false
   end
 
-  def ask_name
-    loop do
-      puts 'What is your name?'
-      response = gets.chomp.capitalize
-      return response if !response.empty?
-      puts "That's not a valid name"
-    end
-  end
+  # Unused but I'll keep it in case they implement that
+  # def ask_name
+  #   loop do
+  #     puts 'What is your name?'
+  #     response = gets.chomp.capitalize
+  #     return response if !response.empty?
+  #     puts "That's not a valid name"
+  #   end
+  # end
 end
 
 class Dealer
@@ -97,70 +161,6 @@ class Dealer
   def initialize
     @hand = []
     @busted = false
-  end
-end
-
-class Deck
-  attr_accessor :cards
-
-  def initialize
-    @cards = new_deck
-  end
-
-  def new_deck
-    fresh_deck = []
-    suits = %w(Hearts Diamonds Spades Clubs)
-    values = %w(2 3 4 5 6 7 8 9 10 J Q K A)
-    suits.each do |suit|
-      values.each { |value| fresh_deck << Card.new(suit, value) }
-    end
-
-    fresh_deck
-  end
-
-  def deal
-    card = cards.sample
-    cards.delete(card)
-    card
-  end
-end
-
-class Card
-  attr_accessor :suit, :value
-
-  def initialize(suit, number)
-    @suit = suit
-    @value = number
-  end
-
-  def draw
-    p "#{convert_suit_to_symbol(suit)}#{value}"
-    # horizontal = "--------------"
-    # num_line = "|#{value}" +
-    #           "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
-    # blank_line = "|#{' ' * (horizontal.size - 2)}|"
-
-    # puts horizontal
-    # puts num_line
-    # puts blank_line
-    # puts blank_line
-    # puts "|     #{convert_suit_to_symbol(suit)}      |"
-    # puts blank_line
-    # puts blank_line
-    # puts blank_line
-    # puts num_line
-    # puts horizontal
-  end
-
-  def convert_suit_to_symbol(string_suit)
-    symbols = {
-      'Hearts' => "\u{02665}",
-      'Diamonds' => "\u{02666}",
-      'Spades' => "\u{02660}",
-      'Clubs' => "\u{02663}"
-    }
-
-    symbols[string_suit]
   end
 end
 
@@ -202,17 +202,17 @@ class TwentyOneGame
       elsif player.total == 21
         puts "Congrats! You won with 21."
       end
-  elsif player.busted || dealer.busted
+    elsif player.busted || dealer.busted
       puts player.busted ? "You busted. Better luck next time." : "The dealer busted. You win!"
-  else
-    if dealer.total == player.total
-      puts "It's a tie"
-    elsif dealer.total > player.total
-      puts "Dealer wins."
     else
-      puts "You win!"
+      if dealer.total == player.total
+        puts "It's a tie"
+      elsif dealer.total > player.total
+        puts "Dealer wins."
+      else
+        puts "You win!"
+      end
     end
-  end
 
     divider
     puts "The final cards are:"
