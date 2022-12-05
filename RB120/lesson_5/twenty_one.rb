@@ -13,7 +13,7 @@ class Card
   end
 
   def draw
-    p "#{convert_suit_to_symbol(suit)}#{value}"
+    puts "=> #{convert_suit_to_symbol(suit)}#{value}"
     # horizontal = "--------------"
     # num_line = "|#{value}" +
     #           "#{' ' * (horizontal.size - 2 - (value.size * 2))}" + "#{value}|"
@@ -226,18 +226,6 @@ class TwentyOneGame
     player.display_cards
   end
 
-    # Possible outcomes, in order of outcome
-    # Dealer has 21, player does too -> tie
-    # Dealer has 21, player doesn't -> dealer wins
-    # player has 21, dealer doesn't -> player wins
-
-    # If player busted -> dealer wins
-    # if dealer busted and player didn't bust -> player wins
-
-    # Lastly
-    # totals compared, bigger one wins
-
-
   def play_again?
     answer = nil
     loop do
@@ -251,9 +239,9 @@ class TwentyOneGame
   end
 
   def reset_game
-    @game_deck = Deck.new
-    @player = Player.new
-    @dealer = Dealer.new
+    self.game_deck = Deck.new
+    @player.hand = []
+    @dealer.hand = []
   end
 
 
@@ -320,17 +308,17 @@ class TwentyOneGame
     divider
     sleep 1
     clear_screen
-    puts "Dealer:"
+    puts "--- Dealer ---"
     puts "#{dealer.display_cards(hide_second:true)}"
-    puts "You:"
-    puts "#{player.display_cards} Total: #{player.total}"
+    puts "--- Your cards ---"
+    puts "#{player.display_cards}" \
+        "--- Total: #{player.total} ---"
     divider
   end
 
   def display_welcome_message
     clear_screen
-    puts "Welcome to 21!"
-    divider
+    puts "---- Welcome to 21! -----"
     sleep 1
   end
 
