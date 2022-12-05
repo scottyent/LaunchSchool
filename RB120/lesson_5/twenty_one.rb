@@ -131,8 +131,8 @@ module Hand
 end
 
 class Player
-  attr_reader :name, :hand
-  attr_accessor :stay, :busted
+  attr_reader :name
+  attr_accessor :stay, :busted, :hand
 
   include Hand
 
@@ -177,15 +177,18 @@ class TwentyOneGame
 
   def start
     display_welcome_message
-
     loop do
-      deal_cards
-      show_initial_cards
-      initial_21_check
-      break if game_over
-      player_turn until player.busted? || player.stay
-      break if player.busted
-      dealer_turn until dealer.busted? || minimum?
+      loop do
+        binding.pry
+        deal_cards
+        show_initial_cards
+        initial_21_check
+        break if game_over
+        player_turn until player.busted? || player.stay
+        break if player.busted
+        dealer_turn until dealer.busted? || minimum?
+        break
+      end
       show_result
       break unless play_again?
       reset_game
@@ -217,13 +220,13 @@ class TwentyOneGame
     divider
     puts "The final cards are:"
     divider
-    puts "Dealer"
-    puts "Total: #{dealer.total}"
+    puts "--- Dealer ---"
     dealer.display_cards
+    puts "Total: #{dealer.total}"
     divider
-    puts "Your cards"
-    puts "Total: #{player.total}"
+    puts "--- Your cards ---"
     player.display_cards
+    puts "Total: #{player.total}"
   end
 
   def play_again?
@@ -242,6 +245,10 @@ class TwentyOneGame
     self.game_deck = Deck.new
     @player.hand = []
     @dealer.hand = []
+    @player.busted = false
+    @dealer.busted = false
+    @player.stay = false
+    @game_over = false
   end
 
 
