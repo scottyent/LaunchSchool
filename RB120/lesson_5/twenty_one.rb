@@ -63,21 +63,20 @@ class Deck
 end
 
 module Hand
-  def display_cards(hide_second: false)
-    if hide_second
+  def display_cards(flop: false)
+    if flop
       hand[0].draw
     else
       hand.each(&:draw)
+      puts "--- Total: #{total} ---"
     end
-
-    puts "--- Total: #{total} ---"
   end
 
   def hit(deck)
     hand << deck.deal
   end
 
-  def total
+  def add_normal_cards
     values = []
     aces = []
     hand.each do |card|
@@ -89,6 +88,12 @@ module Hand
         values << card.value.to_i
       end
     end
+
+    return values, aces
+  end
+
+  def total
+    values, aces = add_normal_cards
 
     if !aces.empty?
       values = adjust_for_aces(values, aces)
@@ -154,27 +159,26 @@ end
 
 # Game Orchestration
 class TwentyOneGame
-  attr_accessor :player, :dealer, :game_deck, :game_over
+  attr_accessor :player, :dealer, :game_deck, :blackjack
 
   def initialize
     @player = Player.new
     @dealer = Dealer.new
     @game_deck = Deck.new
-    @game_over = false
+    @blackjack = false
   end
 
   def start
     display_welcome_message
     loop do
-      loop do
-        deal_cards
-        show_initial_cards
-        initial_21_check
-        break if game_over
+      deal_cards
+      show_initial_cards
+      initial_21_check
+      if !blackjack
         player_turn until player.busted? || player.stay
-        break if player.busted
-        dealer_turn until dealer.busted? || minimum?
-        break
+        if !player.busted
+          dealer_turn until dealer.busted? || minimum?
+        end
       end
       show_result
       break unless play_again?
@@ -182,22 +186,25 @@ class TwentyOneGame
     end
   end
 
+  def display_busted
+    if player.busted
+      puts "You busted. Better luck next time."
+    else
+      puts "The dealer busted. You win!"
+    end
+  end
+
   def show_result
     clear_screen
-    if player.total == 21 || dealer.total == 21
-      if player.total == 21 && dealer.total == 21
-        puts "It's a tie! You both got 21."
-      elsif dealer.total == 21
+
+    if blackjack
+      if dealer.total == 21
         puts "You lose! The dealer has 21."
       elsif player.total == 21
         puts "Congrats! You won with 21."
       end
     elsif player.busted || dealer.busted
-      if player.busted
-        puts "You busted. Better luck next time."
-      else
-        puts "The dealer busted. You win!"
-      end
+      display_busted
     else
       if dealer.total == player.total
         puts "It's a tie"
@@ -208,6 +215,10 @@ class TwentyOneGame
       end
     end
 
+    display_final_cards
+  end
+
+  def display_final_cards
     divider
     puts "The final cards are:"
     divider
@@ -237,7 +248,7 @@ class TwentyOneGame
     @player.busted = false
     @dealer.busted = false
     @player.stay = false
-    @game_over = false
+    @blackjack = false
   end
 
   def player_turn
@@ -274,16 +285,16 @@ class TwentyOneGame
     sleep 1
     clear_screen
     dealer.hit(game_deck)
-    dealer.display_cards(hide_second: false)
+    dealer.display_cards(flop: false)
     sleep 1
   end
 
   def initial_21_check
     if dealer.total == 21
-      @game_over = true
+      @blackjack = true
       puts "Dealer has blackjack. You lose."
     elsif player.total == 21
-      @game_over = true
+      @blackjack = true
       puts "You have blackjack! You win!"
     end
   end
@@ -301,7 +312,7 @@ class TwentyOneGame
     sleep 1
     clear_screen
     puts "--- Dealer ---"
-    dealer.display_cards(hide_second: true)
+    dealer.display_cards(flop: true)
     divider
     puts "--- Your cards ---"
     player.display_cards
