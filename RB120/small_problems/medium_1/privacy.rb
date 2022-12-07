@@ -22,7 +22,6 @@ class Machine
 end
 
 timmy = Machine.new
-
 timmy.start
 timmy.status
 
