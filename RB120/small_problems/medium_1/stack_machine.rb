@@ -45,6 +45,28 @@ class Minilang
     @register = 0
   end
 
+  def eval
+    @commands.each do |input|
+      command = input.downcase
+
+      if valid_integer?(input)
+        load_register(input.to_i)
+      elsif self.methods.include?(command.to_sym)
+        begin
+          send(command)
+        rescue EmptyStack
+          puts "Empty Stack!"
+          break
+        end
+      else
+        puts "#{input} is not a valid command. Process aborted."
+        break
+      end
+    end
+  end
+
+  protected
+
   def load_register(value)
     self.register = value
   end
@@ -109,26 +131,6 @@ class Minilang
 
   def valid_integer?(number)
     number.to_i.to_s == number
-  end
-
-  def eval
-    @commands.each do |input|
-      command = input.downcase
-
-      if valid_integer?(input)
-        load_register(input.to_i)
-      elsif self.methods.include?(command.to_sym)
-        begin
-          send(command)
-        rescue EmptyStack
-          puts "Empty Stack!"
-          break
-        end
-      else
-        puts "#{input} is not a valid command. Process aborted."
-        break
-      end
-    end
   end
 end
 
