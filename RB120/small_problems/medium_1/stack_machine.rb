@@ -135,12 +135,15 @@ class Minilang
   end
 end
 
+FARENHEIT_TO_CENTRIGADE =
+  '9 PUSH 32 PUSH %<degrees_f>d SUB PUSH 5 MULT DIV PRINT'
+
 CENTIGRADE_TO_FAHRENHEIT =
   '5 PUSH %<degrees_c>d PUSH 9 MULT DIV PUSH 32 ADD PRINT'
 
-minilang = Minilang.new(CENTIGRADE_TO_FAHRENHEIT)
+minilang = Minilang.new(FARENHEIT_TO_CENTRIGADE)
 
-minilang.eval(degrees_c: 100)
+minilang.eval(degrees_f: 68)
 
 # # Test Cases
 # Minilang.new('PRINT').eval
