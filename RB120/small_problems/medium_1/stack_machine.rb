@@ -40,12 +40,13 @@ class Minilang
   attr_accessor :stack, :register
 
   def initialize(string_commands)
-    @commands = string_commands.split
+    @commands = string_commands
     @stack = []
     @register = 0
   end
 
-  def eval
+  def eval(missing_data)
+    @commands = format(@commands, missing_data).split
     @commands.each do |input|
       command = input.downcase
 
@@ -77,7 +78,7 @@ class Minilang
 
   def add
     begin
-      self.register = register + stack.pop
+      self.register += stack.pop
     rescue NoMethodError
       raise EmptyStack
     end
@@ -86,7 +87,7 @@ class Minilang
 
   def sub
     begin
-      self.register = register - stack.pop
+      self.register -= stack.pop
     rescue NoMethodError
       raise EmptyStack
     end
@@ -95,7 +96,7 @@ class Minilang
 
   def mult
     begin
-      self.register = register * stack.pop
+      self.register *= stack.pop
     rescue NoMethodError
       raise EmptyStack
     end
@@ -104,7 +105,7 @@ class Minilang
 
   def div
     begin
-      self.register = register / stack.pop
+      self.register /= stack.pop
     rescue NoMethodError
       raise EmptyStack
     end
@@ -113,7 +114,7 @@ class Minilang
 
   def mod
     begin
-      self.register = register % stack.pop
+      self.register %= stack.pop
     rescue NoMethodError
       raise EmptyStack
     end
@@ -134,38 +135,43 @@ class Minilang
   end
 end
 
+CENTIGRADE_TO_FAHRENHEIT =
+  '5 PUSH %<degrees_c>d PUSH 9 MULT DIV PUSH 32 ADD PRINT'
 
+minilang = Minilang.new(CENTIGRADE_TO_FAHRENHEIT)
 
-# Test Cases
-Minilang.new('PRINT').eval
-# 0
+minilang.eval(degrees_c: 100)
 
-Minilang.new('5 PUSH 3 MULT PRINT').eval
-# 15
+# # Test Cases
+# Minilang.new('PRINT').eval
+# # 0
 
-Minilang.new('5 PRINT PUSH 3 PRINT ADD PRINT').eval
-# 5
-# 3
-# 8
+# Minilang.new('5 PUSH 3 MULT PRINT').eval
+# # 15
 
-Minilang.new('5 PUSH 10 PRINT POP PRINT').eval
-# 10
-# 5
+# Minilang.new('5 PRINT PUSH 3 PRINT ADD PRINT').eval
+# # 5
+# # 3
+# # 8
 
-Minilang.new('5 PUSH POP POP PRINT').eval
-# Empty stack!
+# Minilang.new('5 PUSH 10 PRINT POP PRINT').eval
+# # 10
+# # 5
 
-Minilang.new('3 PUSH PUSH 7 DIV MULT PRINT ').eval
-# 6
+# Minilang.new('5 PUSH POP POP PRINT').eval
+# # Empty stack!
 
-Minilang.new('4 PUSH PUSH 7 MOD MULT PRINT ').eval
-# 12
+# Minilang.new('3 PUSH PUSH 7 DIV MULT PRINT ').eval
+# # 6
 
-Minilang.new('-3 PUSH 5 XSUB PRINT').eval
-# Invalid token: XSUB
+# Minilang.new('4 PUSH PUSH 7 MOD MULT PRINT ').eval
+# # 12
 
-Minilang.new('-3 PUSH 5 SUB PRINT').eval
-# 8
+# Minilang.new('-3 PUSH 5 XSUB PRINT').eval
+# # Invalid token: XSUB
 
-Minilang.new('6 PUSH').eval
-# (nothing printed; no PRINT commands)
+# Minilang.new('-3 PUSH 5 SUB PRINT').eval
+# # 8
+
+# Minilang.new('6 PUSH').eval
+# # (nothing printed; no PRINT commands)
