@@ -45,7 +45,7 @@ class Minilang
     @register = 0
   end
 
-  def eval(missing_data)
+  def eval(**missing_data)
     @commands = format(@commands, missing_data).split
     @commands.each do |input|
       command = input.downcase
@@ -141,9 +141,12 @@ FARENHEIT_TO_CENTRIGADE =
 CENTIGRADE_TO_FAHRENHEIT =
   '5 PUSH %<degrees_c>d PUSH 9 MULT DIV PUSH 32 ADD PRINT'
 
-minilang = Minilang.new(FARENHEIT_TO_CENTRIGADE)
+AREA_RECTANGLE =
+  '%<width>d PUSH %<length>d MULT PRINT'
 
-minilang.eval(degrees_f: 68)
+minilang = Minilang.new(AREA_RECTANGLE)
+
+minilang.eval(width: 10, length: 5)
 
 # # Test Cases
 # Minilang.new('PRINT').eval
