@@ -144,9 +144,18 @@ CENTIGRADE_TO_FAHRENHEIT =
 AREA_RECTANGLE =
   '%<width>d PUSH %<length>d MULT PRINT'
 
-minilang = Minilang.new(AREA_RECTANGLE)
+temp1 = Minilang.new(FARENHEIT_TO_CENTRIGADE)
+temp1.eval(degrees_f: 68)
+# 20
 
+temp2 = Minilang.new(CENTIGRADE_TO_FAHRENHEIT)
+temp2.eval(degrees_c: 30)
+# 86
+
+minilang = Minilang.new(AREA_RECTANGLE)
 minilang.eval(width: 10, length: 5)
+# 50
+
 
 # # Test Cases
 # Minilang.new('PRINT').eval
