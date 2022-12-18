@@ -10,10 +10,12 @@ class Player
   attr_reader :name
   attr_accessor :attempts, :guess
 
+  MAX_ATTEMPTS = 7
+
   def initialize
     @name = ask_name
     @guess = nil
-    @attempts = 7
+    @attempts = MAX_ATTEMPTS
   end
 
   def ask_name
@@ -26,6 +28,19 @@ class Player
     end
 
     response
+  end
+
+  def ask_for_guess
+    user_guess = nil
+    loop do
+      puts "Enter a number between 1 and 100:"
+      user_guess = gets.chomp
+      break if GuessingGame::GUESSING_RANGE.cover?(user_guess.to_i)
+      puts "Invalid guess."
+    end
+
+    self.attempts -= 1
+    self.guess = user_guess.to_i
   end
 end
 
@@ -41,18 +56,16 @@ class GuessingGame
   end
 
   def play
-    puts number
-    sleep 1
-
     until correct_guess? || player.attempts == 0
       clear_screen
       display_guess_count
-      ask_for_guess
+      player.ask_for_guess
       display_hint
       sleep 1
     end
 
     display_results
+    sleep 2
     reset_game
   end
 
@@ -68,11 +81,20 @@ class GuessingGame
       puts "You won!"
     else
       puts "You have no more guesses. You lost!"
+      puts "The number was #{number}."
+    end
+  end
+
+  def display_guess_count
+    if player.attempts == 1
+      puts "#{player.name}, you have #{player.attempts} guess remaining."
+    else
+      puts "#{player.name}, you have #{player.attempts} guesses remaining."
     end
   end
 
   def reset_game
-    player.attempts = 7
+    player.attempts = Player::MAX_ATTEMPTS
     self.number = GUESSING_RANGE.to_a.sample
   end
 
@@ -80,29 +102,8 @@ class GuessingGame
     system 'clear'
   end
 
-  def display_guess_count
-    puts "#{player.name}, you have #{player.attempts} guesses remaining."
-  end
-
-  def ask_for_guess
-    user_guess = nil
-    loop do
-      puts "Enter a number between 1 and 100:"
-      user_guess = gets.chomp
-      break if valid_integer?(user_guess) && GUESSING_RANGE.include?(user_guess.to_i)
-      puts "Invalid guess."
-    end
-
-    player.attempts -= 1
-    player.guess = user_guess.to_i
-  end
-
   def correct_guess?
     player.guess == number
-  end
-
-  def valid_integer?(num)
-    num.to_i.to_s == num
   end
 end
 
