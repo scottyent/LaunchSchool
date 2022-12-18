@@ -49,6 +49,7 @@ class GuessingGame
       display_guess_count
       ask_for_guess
       display_hint
+      sleep 1
     end
 
     display_results
@@ -106,5 +107,6 @@ class GuessingGame
 end
 
 game = GuessingGame.new
+game.play
 game.play
 
