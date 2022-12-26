@@ -90,8 +90,7 @@ class PokerHand
   end
 
   def straight?
-    # I think the best way to go about this, and many of these, is to convert
-    # face cards to numbers and then compare ranges from first number to last
+    (hand_as_numbers.first..hand_as_numbers.last).to_a == hand_as_numbers
   end
 
   def three_of_a_kind?
@@ -217,14 +216,14 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Flush'
 
-# hand = PokerHand.new([
-#   Card.new(8,      'Clubs'),
-#   Card.new(9,      'Diamonds'),
-#   Card.new(10,     'Clubs'),
-#   Card.new(7,      'Hearts'),
-#   Card.new('Jack', 'Clubs')
-# ])
-# puts hand.evaluate == 'Straight'
+hand = PokerHand.new([
+  Card.new(8,      'Clubs'),
+  Card.new(9,      'Diamonds'),
+  Card.new(10,     'Clubs'),
+  Card.new(7,      'Hearts'),
+  Card.new('Jack', 'Clubs')
+])
+puts hand.evaluate == 'Straight'
 
 # hand = PokerHand.new([
 #   Card.new('Queen', 'Clubs'),
