@@ -100,6 +100,11 @@ class PokerHand
   end
 
   def three_of_a_kind?
+    hand_as_numbers.each do |card|
+      return true if hand_as_numbers.count(card) == 3
+    end
+
+    false
   end
 
   def two_pair?
@@ -239,14 +244,14 @@ puts hand.evaluate == 'Straight'
 # ])
 # puts hand.evaluate == 'Straight'
 
-# hand = PokerHand.new([
-#   Card.new(3, 'Hearts'),
-#   Card.new(3, 'Clubs'),
-#   Card.new(5, 'Diamonds'),
-#   Card.new(3, 'Spades'),
-#   Card.new(6, 'Diamonds')
-# ])
-# puts hand.evaluate == 'Three of a kind'
+hand = PokerHand.new([
+  Card.new(3, 'Hearts'),
+  Card.new(3, 'Clubs'),
+  Card.new(5, 'Diamonds'),
+  Card.new(3, 'Spades'),
+  Card.new(6, 'Diamonds')
+])
+puts hand.evaluate == 'Three of a kind'
 
 # hand = PokerHand.new([
 #   Card.new(9, 'Hearts'),
