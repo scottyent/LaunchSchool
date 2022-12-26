@@ -12,10 +12,11 @@ require 'pry-byebug'
 
 class PokerHand
 
-  attr_reader :hand
+  attr_reader :hand, :hand_as_numbers
 
   def initialize(*args)
     @hand = validate_hand(*args)
+    @hand_as_numbers = convert_hand_to_num
   end
 
   def validate_hand(cards)
@@ -57,7 +58,21 @@ class PokerHand
 
   private
 
+  def convert_hand_to_num
+    face_converter = {
+      'Jack' => 11,
+      'Queen' => 12,
+      'King' => 13,
+      'Ace' => 14
+    }
+
+    @hand.map do |card|
+      (2..10).cover?(card.rank) ? card.rank : face_converter[card.rank]
+    end.sort
+  end
+
   def royal_flush?
+    (10..14) == (hand_as_numbers.first..hand_as_numbers.last)
   end
 
   def straight_flush?
@@ -75,8 +90,8 @@ class PokerHand
   end
 
   def straight?
-    I think the best way to go about this, and many of these, is to convert
-    face cards to numbers and then compare ranges from first number to last
+    # I think the best way to go about this, and many of these, is to convert
+    # face cards to numbers and then compare ranges from first number to last
   end
 
   def three_of_a_kind?
@@ -156,15 +171,15 @@ class Array
 end
 
 # Test that we can identify each PokerHand type.
-# hand = PokerHand.new([
-#   Card.new(10,      'Hearts'),
-#   Card.new('Ace',   'Hearts'),
-#   Card.new('Queen', 'Hearts'),
-#   Card.new('King',  'Hearts'),
-#   Card.new('Jack',  'Hearts')
-# ])
-# hand.print
-# puts hand.evaluate == 'Royal flush'
+hand = PokerHand.new([
+  Card.new(10,      'Hearts'),
+  Card.new('Ace',   'Hearts'),
+  Card.new('Queen', 'Hearts'),
+  Card.new('King',  'Hearts'),
+  Card.new('Jack',  'Hearts')
+])
+hand.print
+puts hand.evaluate == 'Royal flush'
 
 # hand = PokerHand.new([
 #   Card.new(8,       'Clubs'),
