@@ -76,6 +76,7 @@ class PokerHand
   end
 
   def straight_flush?
+    flush? && straight?
   end
 
   def four_of_a_kind?
@@ -177,17 +178,16 @@ hand = PokerHand.new([
   Card.new('King',  'Hearts'),
   Card.new('Jack',  'Hearts')
 ])
-hand.print
 puts hand.evaluate == 'Royal flush'
 
-# hand = PokerHand.new([
-#   Card.new(8,       'Clubs'),
-#   Card.new(9,       'Clubs'),
-#   Card.new('Queen', 'Clubs'),
-#   Card.new(10,      'Clubs'),
-#   Card.new('Jack',  'Clubs')
-# ])
-# puts hand.evaluate == 'Straight flush'
+hand = PokerHand.new([
+  Card.new(8,       'Clubs'),
+  Card.new(9,       'Clubs'),
+  Card.new('Queen', 'Clubs'),
+  Card.new(10,      'Clubs'),
+  Card.new('Jack',  'Clubs')
+])
+puts hand.evaluate == 'Straight flush'
 
 # hand = PokerHand.new([
 #   Card.new(3, 'Hearts'),
