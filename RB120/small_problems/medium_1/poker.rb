@@ -110,6 +110,15 @@ class PokerHand
   end
 
   def two_pair?
+    cards_copy = hand_as_numbers.clone
+    pairs = []
+    hand_as_numbers.each do |card|
+      pairs << card if hand_as_numbers.count(card) == 2
+    end
+
+    pairs.uniq!
+
+    pairs.size == 2
   end
 
   def pair?
@@ -260,14 +269,14 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Three of a kind'
 
-# hand = PokerHand.new([
-#   Card.new(9, 'Hearts'),
-#   Card.new(9, 'Clubs'),
-#   Card.new(5, 'Diamonds'),
-#   Card.new(8, 'Spades'),
-#   Card.new(5, 'Hearts')
-# ])
-# puts hand.evaluate == 'Two pair'
+hand = PokerHand.new([
+  Card.new(9, 'Hearts'),
+  Card.new(9, 'Clubs'),
+  Card.new(5, 'Diamonds'),
+  Card.new(8, 'Spades'),
+  Card.new(5, 'Hearts')
+])
+puts hand.evaluate == 'Two pair'
 
 hand = PokerHand.new([
   Card.new(2, 'Hearts'),
@@ -278,11 +287,11 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Pair'
 
-# hand = PokerHand.new([
-#   Card.new(2,      'Hearts'),
-#   Card.new('King', 'Clubs'),
-#   Card.new(5,      'Diamonds'),
-#   Card.new(9,      'Spades'),
-#   Card.new(3,      'Diamonds')
-# ])
-# puts hand.evaluate == 'High card'
+hand = PokerHand.new([
+  Card.new(2,      'Hearts'),
+  Card.new('King', 'Clubs'),
+  Card.new(5,      'Diamonds'),
+  Card.new(9,      'Spades'),
+  Card.new(3,      'Diamonds')
+])
+puts hand.evaluate == 'High card'
