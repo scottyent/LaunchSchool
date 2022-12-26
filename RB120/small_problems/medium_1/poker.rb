@@ -80,6 +80,11 @@ class PokerHand
   end
 
   def four_of_a_kind?
+    hand_as_numbers.each do |card|
+      return true if hand_as_numbers.count(card) == 4
+    end
+
+    false
   end
 
   def full_house?
@@ -189,14 +194,14 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Straight flush'
 
-# hand = PokerHand.new([
-#   Card.new(3, 'Hearts'),
-#   Card.new(3, 'Clubs'),
-#   Card.new(5, 'Diamonds'),
-#   Card.new(3, 'Spades'),
-#   Card.new(3, 'Diamonds')
-# ])
-# puts hand.evaluate == 'Four of a kind'
+hand = PokerHand.new([
+  Card.new(3, 'Hearts'),
+  Card.new(3, 'Clubs'),
+  Card.new(5, 'Diamonds'),
+  Card.new(3, 'Spades'),
+  Card.new(3, 'Diamonds')
+])
+puts hand.evaluate == 'Four of a kind'
 
 # hand = PokerHand.new([
 #   Card.new(3, 'Hearts'),
