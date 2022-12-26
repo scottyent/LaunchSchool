@@ -88,6 +88,7 @@ class PokerHand
   end
 
   def full_house?
+    three_of_a_kind? && pair?
   end
 
   def flush?
@@ -213,14 +214,14 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Four of a kind'
 
-# hand = PokerHand.new([
-#   Card.new(3, 'Hearts'),
-#   Card.new(3, 'Clubs'),
-#   Card.new(5, 'Diamonds'),
-#   Card.new(3, 'Spades'),
-#   Card.new(5, 'Hearts')
-# ])
-# puts hand.evaluate == 'Full house'
+hand = PokerHand.new([
+  Card.new(3, 'Hearts'),
+  Card.new(3, 'Clubs'),
+  Card.new(5, 'Diamonds'),
+  Card.new(3, 'Spades'),
+  Card.new(5, 'Hearts')
+])
+puts hand.evaluate == 'Full house'
 
 hand = PokerHand.new([
   Card.new(10, 'Hearts'),
