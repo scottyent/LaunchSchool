@@ -72,7 +72,8 @@ class PokerHand
   end
 
   def royal_flush?
-    (10..14) == (hand_as_numbers.first..hand_as_numbers.last)
+    (10..14) == (hand_as_numbers.first..hand_as_numbers.last) &&
+      flush?
   end
 
   def straight_flush?
@@ -241,14 +242,14 @@ hand = PokerHand.new([
 ])
 puts hand.evaluate == 'Straight'
 
-# hand = PokerHand.new([
-#   Card.new('Queen', 'Clubs'),
-#   Card.new('King',  'Diamonds'),
-#   Card.new(10,      'Clubs'),
-#   Card.new('Ace',   'Hearts'),
-#   Card.new('Jack',  'Clubs')
-# ])
-# puts hand.evaluate == 'Straight'
+hand = PokerHand.new([
+  Card.new('Queen', 'Clubs'),
+  Card.new('King',  'Diamonds'),
+  Card.new(10,      'Clubs'),
+  Card.new('Ace',   'Hearts'),
+  Card.new('Jack',  'Clubs')
+])
+puts hand.evaluate == 'Straight'
 
 hand = PokerHand.new([
   Card.new(3, 'Hearts'),
