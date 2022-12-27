@@ -110,14 +110,12 @@ class PokerHand
   end
 
   def two_pair?
-    cards_copy = hand_as_numbers.clone
     pairs = []
     hand_as_numbers.each do |card|
       pairs << card if hand_as_numbers.count(card) == 2
     end
 
     pairs.uniq!
-
     pairs.size == 2
   end
 
@@ -186,9 +184,9 @@ class Card
 end
 
 # Testing
-# hand = PokerHand.new(Deck.new)
-# hand.print
-# puts hand.evaluate
+hand = PokerHand.new(Deck.new)
+hand.print
+puts hand.evaluate
 
 # Danger danger danger: monkey
 # patching for testing purposes.
