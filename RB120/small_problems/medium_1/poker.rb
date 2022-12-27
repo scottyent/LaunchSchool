@@ -11,12 +11,13 @@ require 'pry'
 require 'pry-byebug'
 
 class PokerHand
-
-  attr_reader :hand, :hand_as_numbers
+  include Comparable
+  attr_reader :hand, :hand_as_numbers, :hand_name
 
   def initialize(*args)
     @hand = validate_hand(*args)
     @hand_as_numbers = convert_hand_to_num
+    @hand_name = evaluate
   end
 
   def validate_hand(cards)
@@ -126,6 +127,27 @@ class PokerHand
 
     false
   end
+
+  def <=>(other)
+    name_to_num = {
+    'Royal flush' => 10,
+    'Straight flush' => 9,
+    'Four of a kind' => 8,
+    'Full house' => 7,
+    'Flush' => 6,
+    'Straight' => 5,
+    'Three of a kind' => 4,
+    'Two pair' => 3,
+    'Pair' => 2,
+    'High Card' => 1
+  }
+
+    if hand_name == 'High card' && other.hand_name == 'High card'
+      hand_as_numbers.max <=> other.hand_as_numbers.max
+    else
+      name_to_num[hand_name] <=> name_to_num[other.hand_name]
+    end
+  end
 end
 
 class Deck
@@ -184,9 +206,9 @@ class Card
 end
 
 # Testing
-hand = PokerHand.new(Deck.new)
-hand.print
-puts hand.evaluate
+# hand = PokerHand.new(Deck.new)
+# hand.print
+# puts hand.evaluate
 
 # Danger danger danger: monkey
 # patching for testing purposes.
@@ -211,6 +233,7 @@ hand = PokerHand.new([
   Card.new(10,      'Clubs'),
   Card.new('Jack',  'Clubs')
 ])
+
 puts hand.evaluate == 'Straight flush'
 
 hand = PokerHand.new([
@@ -293,3 +316,47 @@ hand = PokerHand.new([
   Card.new(3,      'Diamonds')
 ])
 puts hand.evaluate == 'High card'
+
+
+# Test hand comparison
+
+# Royal flush vs Straight flush
+
+hand = PokerHand.new([
+  Card.new(10,      'Hearts'),
+  Card.new('Ace',   'Hearts'),
+  Card.new('Queen', 'Hearts'),
+  Card.new('King',  'Hearts'),
+  Card.new('Jack',  'Hearts')
+])
+
+hand2 = PokerHand.new([
+  Card.new(8,       'Clubs'),
+  Card.new(9,       'Clubs'),
+  Card.new('Queen', 'Clubs'),
+  Card.new(10,      'Clubs'),
+  Card.new('Jack',  'Clubs')
+])
+
+puts hand > hand2 # true
+
+# Testing High card
+
+hand = PokerHand.new([
+  Card.new(2,      'Hearts'),
+  Card.new('King', 'Clubs'),
+  Card.new(5,      'Diamonds'),
+  Card.new(9,      'Spades'),
+  Card.new(3,      'Diamonds')
+])
+
+hand2 = PokerHand.new([
+  Card.new(2,      'Hearts'),
+  Card.new('Ace', 'Clubs'),
+  Card.new(5,      'Diamonds'),
+  Card.new(9,      'Spades'),
+  Card.new(3,      'Diamonds')
+])
+
+puts hand2 < hand # false
+puts hand2 > hand # true
