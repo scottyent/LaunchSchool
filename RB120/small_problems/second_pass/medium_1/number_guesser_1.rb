@@ -13,10 +13,6 @@ class GuessingGame
     @guess = nil
   end
 
-  def new_number
-    (RANGE_BEGIN..RANGE_END).to_a.sample
-  end
-
   def play
     while guesses > 0
       display_guesses
@@ -29,6 +25,14 @@ class GuessingGame
     puts "You lose. The number was #{number}" unless correct_guess?(guess)
     puts
     reset
+  end
+
+  private
+
+  attr_accessor :guesses, :guess, :number
+
+  def new_number
+    (RANGE_BEGIN..RANGE_END).to_a.sample
   end
 
   def reset
@@ -79,15 +83,11 @@ class GuessingGame
   def valid_integer?(input)
     input.to_i.to_s == input
   end
-
-  private
-
-  attr_accessor :guesses, :guess, :number
 end
 
 game = GuessingGame.new
 game.play
-sleep(3)
+
 game.play
 
 # You have 7 guesses remaining.
