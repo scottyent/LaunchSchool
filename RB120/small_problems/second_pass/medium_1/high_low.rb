@@ -26,7 +26,6 @@ class Card
     FACE_CARDS.include?(value) ? FACE_TO_NUM[value] : value
   end
 
-
   def <=>(other)
     card1 = rank_to_num(rank)
     card2 = rank_to_num(other.rank)
