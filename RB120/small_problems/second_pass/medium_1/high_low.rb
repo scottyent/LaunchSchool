@@ -3,6 +3,7 @@ require 'pry-byebug'
 
 class Card
   include Comparable
+  attr_reader :rank, :suit
 
   FACE_CARDS = %w(Jack Queen King Ace)
   FACE_TO_NUM = {
@@ -11,7 +12,6 @@ class Card
     'King' => 13,
     'Ace' => 14
   }
-  attr_reader :rank, :suit
 
   def initialize(rank, suit)
     @rank = rank
