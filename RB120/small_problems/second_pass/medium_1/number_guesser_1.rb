@@ -21,8 +21,13 @@ class GuessingGame
     while guesses > 0
       display_guesses
       get_number
+      outcome = check_guess
+      display_outcome(outcome)
+      break if correct_guess?(guess)
     end
 
+    puts "You lose. The number was #{number}" unless correct_guess?(guess)
+    puts
     reset
   end
 
@@ -32,6 +37,29 @@ class GuessingGame
     self.guess = nil
   end
 
+  def correct_guess?(num)
+    num == number
+  end
+
+  def check_guess
+    if guess < number
+      'low'
+    elsif guess > number
+      'high'
+    else
+      'match'
+    end
+  end
+
+  def display_outcome(evaluation)
+    if evaluation == "match"
+      puts "That's the number!"
+      puts
+      puts "You won!"
+    else
+      puts "Your guess is too #{evaluation}"
+    end
+  end
   def display_guesses
     puts "You have #{guesses} remaining."
   end
@@ -58,6 +86,8 @@ class GuessingGame
 end
 
 game = GuessingGame.new
+game.play
+sleep(3)
 game.play
 
 # You have 7 guesses remaining.
