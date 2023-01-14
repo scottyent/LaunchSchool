@@ -80,3 +80,9 @@ puts [Length.new(1, :mi), Length.new(1, :nmi), Length.new(1, :km)].sort
 # Alright, I solved this but kind of cheated by using comparable and the
 # spaceship operator. Tomorrow, work on figuring out why the existing code
 # didn't work
+
+# I was looking it over, but realized sort uses <=> which is why it
+# wasn't working before, and so I think my solution is still fine.
+# The LS solution is that they basically copied over the ==(other)
+# method but instead for the <=> operator. I prefer just calculating
+# to one unit and comparing, but they made a case statement.
