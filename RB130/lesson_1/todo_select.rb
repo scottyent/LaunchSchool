@@ -146,6 +146,43 @@ class TodoList
     end
     result_list
   end
+
+  def find_by_title(title)
+    each do |todo|
+      return todo if todo.title == title
+    end
+
+    nil
+  end
+
+  def all_done
+    select do |todo|
+      todo.done?
+    end
+  end
+
+  def all_not_done
+    select do |todo|
+      !todo.done?
+    end
+  end
+
+  def mark_done(todo_name)
+    each do |todo|
+      if todo.title == todo_name
+        todo.done = true
+        break
+      end
+    end
+  end
+
+  def mark_all_done
+    each { |todo| todo.done! }
+  end
+
+  def mark_all_undone
+    each { |todo| todo.undone! }
+  end
 end
 
 # Test cases
@@ -161,7 +198,7 @@ list.add(todo3)
 
 todo1.done!
 
-results = list.select { |todo| todo.done? }    # you need to implement this method
+results = list.select { |todo| todo.title == "FARTS" }    # you need to implement this method
 
 puts results.inspect
 
