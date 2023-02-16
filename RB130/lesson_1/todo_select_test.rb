@@ -135,6 +135,59 @@ class TodoListTest < MiniTest::Test
     assert_equal(expected, @list.to_s)
   end
 
+  def test_to_s__one_done
+    expected = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [X] Buy milk
+    [ ] Clean room
+    [ ] Go to gym
+    OUTPUT
 
+    @todo1.done!
+    assert_equal(expected, @list.to_s)
+  end
+
+  def test_to_s__all_done
+    expected = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [X] Buy milk
+    [X] Clean room
+    [X] Go to gym
+    OUTPUT
+
+    @list.done!
+    assert_equal(expected, @list.to_s)
+  end
+
+  def test_each
+    caught_iterations = []
+    @list.each { |item| caught_iterations << item }
+    assert_equal(@todos, caught_iterations)
+  end
+
+  def test_each_return_value
+    result = @list.each { |item| nil }
+    assert_equal(@list, result)
+  end
+
+  def test_select
+    @todo1.done!
+    result = @list.select { |todo| todo.done? }
+
+    assert_equal([@todo1], result.to_a)
+  end
+
+  def test_select_return_value
+    result = @list.select { |todo| todo.done? }
+    assert_equal(TodoList, result.class)
+  end
+
+  def test_find_by_title
+    found = @list.find_by_title('Go to gym')
+    assert_equal(@todo3, found)
+
+    not_found = @list.find_by_title('Pickles')
+    assert_equal(nil, not_found)
+  end
 
 end
