@@ -188,22 +188,22 @@ end
 
 # Test cases
 
-todo1 = Todo.new("Buy milk")
-todo2 = Todo.new("Clean room")
-todo3 = Todo.new("Go to gym")
+# todo1 = Todo.new("Buy milk")
+# todo2 = Todo.new("Clean room")
+# todo3 = Todo.new("Go to gym")
 
-list = TodoList.new("Today's Todos")
-list.add(todo1)
-list.add(todo2)
-list.add(todo3)
+# list = TodoList.new("Today's Todos")
+# list.add(todo1)
+# list.add(todo2)
+# list.add(todo3)
 
-todo1.done!
+# todo1.done!
 
-results = list.select { |todo| todo.title == "FARTS" }    # you need to implement this method
+# results = list.select { |todo| todo.title == "FARTS" }    # you need to implement this method
 
 # puts results.inspect
 
 # Should return something similar to:
 # [#<Todo:0x007fd88c0ad9f0 @title="Buy milk", @description="", @done=true>]
 
-puts list
+# puts list.to_s
