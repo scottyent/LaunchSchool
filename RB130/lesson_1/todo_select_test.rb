@@ -109,6 +109,31 @@ class TodoListTest < MiniTest::Test
     assert_raises(IndexError) { @list.mark_undone_at(5) }
   end
 
+  def test_done!
+    @list.done!
+    assert_equal(true, @list.item_at(0).done?)
+    assert_equal(true, @list.item_at(1).done?)
+    assert_equal(true, @list.item_at(2).done?)
+    assert_equal(true, @list.done?)
+  end
+
+  def test_remove_at
+    assert_raises(IndexError) { @list.item_at(5) }
+    removed_todo = @list.remove_at(1)
+    assert(removed_todo == @todo2)
+    assert_equal([@todo1, @todo3], @list.to_a)
+  end
+
+  def test_to_s
+    expected = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [ ] Buy milk
+    [ ] Clean room
+    [ ] Go to gym
+    OUTPUT
+
+    assert_equal(expected, @list.to_s)
+  end
 
 
 

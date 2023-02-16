@@ -128,8 +128,9 @@ class TodoList
   end
 
   def to_s
-    puts "---- Today's Todos ----"
-    @todos.each { |todo| puts todo }
+    text = "---- Today's Todos ----\n"
+    text << @todos.map(&:to_s).join("\n")
+    text
   end
 
   def each
@@ -200,7 +201,9 @@ todo1.done!
 
 results = list.select { |todo| todo.title == "FARTS" }    # you need to implement this method
 
-puts results.inspect
+# puts results.inspect
 
 # Should return something similar to:
 # [#<Todo:0x007fd88c0ad9f0 @title="Buy milk", @description="", @done=true>]
+
+puts list
