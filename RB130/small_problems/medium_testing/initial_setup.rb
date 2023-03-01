@@ -20,4 +20,14 @@ class CashRegisterTest < Minitest::Test
 
     assert_equal before_transaction + 20, after_transaction
   end
+
+  def test_change
+    @transaction1.amount_paid = 30
+
+    difference = @transaction1.amount_paid - @transaction1.item_cost
+    given_change = @kasse1.change(@transaction1)
+
+    assert_equal difference, given_change
+  end
+
 end
