@@ -30,4 +30,10 @@ class CashRegisterTest < Minitest::Test
     assert_equal difference, given_change
   end
 
+  def test_give_receipt
+    expected_output  = "You've paid $#{@transaction1.item_cost}.\n"
+
+    assert_output(expected_output) { @kasse1.give_receipt(@transaction1) }
+  end
+
 end
