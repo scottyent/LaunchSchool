@@ -35,7 +35,4 @@ class CashRegisterTest < Minitest::Test
 
     assert_output(expected_output) { @kasse1.give_receipt(@transaction1) }
   end
-
-  def
-
 end
