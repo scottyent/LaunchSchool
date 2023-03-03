@@ -10,7 +10,8 @@ class TransactionTest < Minitest::Test
   def test_prompt_for_payment
     purchase = Transaction.new(30)
     input = StringIO.new("30\n")
-    purchase.prompt_for_payment(input: input)
+    output = StringIO.new
+    purchase.prompt_for_payment(input: input, output: output)
 
     assert_equal purchase.amount_paid, 30
   end
