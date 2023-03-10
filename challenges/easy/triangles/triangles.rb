@@ -31,9 +31,9 @@ or float is good.
 
 Algorithm:
 * Validate the input at all - are they actually integers or floats, if not
-return an error
+return an error (lets stick with integers first)
 * validate that the values constitute an actually valid triangle
-  * are all sides greater than 0?
+  * are all sides greater than 0? :DONE
   * do any two add up to larger than the third? TODO
       1st side + 2nd side > 3rd side
       1st side + 3rd side > 2nd side
@@ -49,6 +49,24 @@ perhaps there is a mathematical way to represent this. I think I could do
   so I will just make it a manual formula for now
 =end
 
-def
+class Triangle
+  attr_accessor :kind
 
+  def initialize(side1, side2, side3)
+    @side1 = side1
+    @side2 = side2
+    @side3 = side3
+    @sides_array = [side1, side2, side3]
+    valid_triangle?
+  end
+
+  def equilateral_check
+    @kind = 'equilateral' if @sides_array.all?(@side1)
+  end
+
+  def valid_triangle?
+    raise ArgumentError, "Invalid Triangle" if @sides_array.any? { |side| side <= 0 }
+  end
 end
+
+test = Triangle.new(2, 1, 0)
