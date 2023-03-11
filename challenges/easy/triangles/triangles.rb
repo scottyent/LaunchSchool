@@ -34,20 +34,23 @@ Algorithm:
 return an error (lets stick with integers first)
 * validate that the values constitute an actually valid triangle
   * are all sides greater than 0? :DONE
-  * do any two add up to larger than the third? TODO
-      1st side + 2nd side > 3rd side
-      1st side + 3rd side > 2nd side
-      2nd side + 3rd side > 1st side
+  * do any two add up to less than the third? :DONE
+      1st side + 2nd side < 3rd side
+      1st side + 3rd side < 2nd side
+      2nd side + 3rd side < 1st side
 * iterate through the values
-    * return equilateral if any value.count == 3
+    * return equilateral if any value.count == 3 :DONE
     * return isosceles if any value.count == 2
-* if neither of the above were trigger during the loop, return isosceles
+* if neither of the above were trigger during the loop, return scalene
 
 
 perhaps there is a mathematical way to represent this. I think I could do
   something fancy, but in the end this is a simple thing with a simple array
   so I will just make it a manual formula for now
 =end
+
+require 'pry'
+require 'pry-byebug'
 
 class Triangle
   attr_accessor :kind
@@ -58,15 +61,30 @@ class Triangle
     @side3 = side3
     @sides_array = [side1, side2, side3]
     valid_triangle?
+    @kind = determine_kind
   end
 
-  def equilateral_check
-    @kind = 'equilateral' if @sides_array.all?(@side1)
+  def determine_kind
+    @sides_array.each do |side|
+      count = @sides_array.count(side)
+      case count
+      when 3 then return 'equilateral'
+      when 2 then return 'isosceles'
+      end
+    end
+
+    'scalene'
   end
 
   def valid_triangle?
-    raise ArgumentError, "Invalid Triangle" if @sides_array.any? { |side| side <= 0 }
+     if @sides_array.any? { |side| side <= 0 } ||
+          @side1 + @side2 <= @side3 ||
+          @side1 + @side3 <= @side2 ||
+          @side2 + @side3 <= @side1
+          raise ArgumentError, "Invalid Triangle"
+     end
+
+     true
   end
 end
 
-test = Triangle.new(2, 1, 0)
