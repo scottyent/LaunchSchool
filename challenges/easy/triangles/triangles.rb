@@ -49,15 +49,12 @@ perhaps there is a mathematical way to represent this. I think I could do
   so I will just make it a manual formula for now
 =end
 
-require 'pry'
-require 'pry-byebug'
-
 class Triangle
   attr_accessor :kind
 
   def initialize(side1, side2, side3)
     @sides_array = [side1, side2, side3]
-    valid_triangle?
+    raise ArgumentError, "Invalid Triangle" unless valid_triangle?
     @kind = determine_kind
   end
 
@@ -73,17 +70,15 @@ class Triangle
     'scalene'
   end
 
-  def invalid_triangle?
+  def valid_sides?
     side1, side2, side3 = @sides_array
-    side1 + side2 <= side3 || side1 + side3 <= side2 ||
-    side2 + side3 <= side1
+    side1 + side2 > side3 &&
+    side1 + side3 > side2 &&
+    side2 + side3 > side1
   end
 
   def valid_triangle?
-     if @sides_array.any? { |side| side <= 0 } || invalid_triangle?
-          raise ArgumentError, "Invalid Triangle"
-     end
-     true
+     @sides_array.any? { |side| side > 0 } && valid_sides?
   end
 end
 
