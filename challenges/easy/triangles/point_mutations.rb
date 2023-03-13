@@ -1,21 +1,44 @@
-Write a program that can calculate the Hamming distance between two DNA strands.
+# Write a program that can calculate the Hamming distance between two DNA strands.
 
 =begin
-Input:
-Output:
+Input: two string sequences of ANY length (ideally the same but doesn't have to be)
+Output: a number representing the number of point mutations between the two
 
 Rules
 Explicit:
-*
+* If the strings are the same size, compare the shorter parts that overlap
+* Any difference between index values constitutes a mutation
 Implicit:
-*
+* We're given valid strings that represent DNA
+* empety strings return 0 (based on tests)
 
 Algorithm:
-*
+Seems pretty straight forward.
+* Set the amount of times to iterate by the shortest string length
+* Initialize a mutations variable to zero
+* iterate length.times over, using that number as an index.
+* any time the numbers don't match, increment the mutations
+* return the mutations
 =end
 
-def
+# Oops - they DO instantiate a new object, which is DNA so I have to refactor
+# this to be a class + a method to pass in a comparison strand
 
+require 'pry'
+require 'pry-byebug'
+
+def hamming_distance(dna1, dna2)
+  mutations = 0
+  compare = dna1 <=> dna2
+  length = dna1.length
+  length = dna2.length if (dna1.length <=> dna2.length) == 1
+
+  length.times do |index|
+    mutations += 1 if dna1[index] != dna2[index]
+  end
+
+  mutations
 end
 
 # Test Cases
+p hamming_distance('GGACGGATTCTGACCTGGACTAATTTTGGGG', 'AGGACGGATTCTGACCTGGACTAATTTTGGGG')
