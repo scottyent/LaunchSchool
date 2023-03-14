@@ -22,19 +22,14 @@ Seems pretty straight forward.
 =end
 
 class DNA
-
   def initialize(dna1)
     @dna1 = dna1
   end
 
   def hamming_distance(dna2)
     mutations = 0
-    length = @dna1.length
-    length = dna2.length if (@dna1.length <=> dna2.length) == 1
-
-    length.times do |index|
-      mutations += 1 if @dna1[index] != dna2[index]
-    end
+    length = @dna1.size < dna2.size ? @dna1.size : dna2.size
+    length.times { |index| mutations += 1 if @dna1[index] != dna2[index] }
 
     mutations
   end
