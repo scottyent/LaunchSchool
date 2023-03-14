@@ -21,24 +21,21 @@ Seems pretty straight forward.
 * return the mutations
 =end
 
-# Oops - they DO instantiate a new object, which is DNA so I have to refactor
-# this to be a class + a method to pass in a comparison strand
+class DNA
 
-require 'pry'
-require 'pry-byebug'
-
-def hamming_distance(dna1, dna2)
-  mutations = 0
-  compare = dna1 <=> dna2
-  length = dna1.length
-  length = dna2.length if (dna1.length <=> dna2.length) == 1
-
-  length.times do |index|
-    mutations += 1 if dna1[index] != dna2[index]
+  def initialize(dna1)
+    @dna1 = dna1
   end
 
-  mutations
-end
+  def hamming_distance(dna2)
+    mutations = 0
+    length = @dna1.length
+    length = dna2.length if (@dna1.length <=> dna2.length) == 1
 
-# Test Cases
-p hamming_distance('GGACGGATTCTGACCTGGACTAATTTTGGGG', 'AGGACGGATTCTGACCTGGACTAATTTTGGGG')
+    length.times do |index|
+      mutations += 1 if @dna1[index] != dna2[index]
+    end
+
+    mutations
+  end
+end
