@@ -31,18 +31,22 @@ class PerfectNumber
   def self.classify(number)
     raise StandardError if number < 1
 
-    divisors = []
-
-    (1...number).each do |divisor|
-      divisors << divisor if number % divisor == 0
-    end
-
-    aliquot_sum = divisors.sum
+    aliquot_sum = sum_divisors(number)
 
     case aliquot_sum
     when number then 'perfect'
     when 1...number then 'deficient'
     when (number + 1).. then 'abundant'
+    end
+  end
+
+  class << self
+    private
+
+    def sum_divisors(number)
+      (1...number).select do |divisor|
+        number % divisor == 0
+      end.sum
     end
   end
 end
