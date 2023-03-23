@@ -54,17 +54,14 @@ class OctalTest < Minitest::Test
   end
 
   def test_abc1z_is_seen_as_invalid_and_returns_0
-    skip
     assert_equal 0, Octal.new('abc1z').to_decimal
   end
 
   def test_valid_octal_formatted_string_011_is_decimal_9
-    skip
     assert_equal 9, Octal.new('011').to_decimal
   end
 
   def test_234abc_is_seen_as_invalid_and_returns_0
-    skip
     assert_equal 0, Octal.new('234abc').to_decimal
   end
 end
