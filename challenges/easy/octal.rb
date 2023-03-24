@@ -36,14 +36,8 @@ class Octal
   end
 
   def validate_number(num)
-    return 0 if num.match?(/[89]/)
-    if num.start_with?('0')
-      last_zero = num.index(/[^0]/) - 1
-      num.slice!(0..last_zero)
-    end
-
-    return num.to_i if num.to_i.to_s == num
-    0
+    return 0 if num.match?(/[^0-7]/)
+    num.to_i
   end
 
   def to_decimal
