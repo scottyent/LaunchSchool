@@ -57,7 +57,7 @@ class BeerSong
   end
 
   def self.adjusted_bottle_number(number)
-    (1..99).cover?(number) ? number - 1 : 99
+    (number == 0) ? 99 : number - 1
   end
 
   def self.verses(start, stop)
