@@ -76,22 +76,22 @@ class Diamond
     padding = width / 2
     inner_padding = 1
     index = 0
-    given_letter_index =  LETTERS.index(letter)
+    given_letter_index = LETTERS.index(letter)
     reverse = false
 
-    start_end = "#{' ' * padding }#{LETTERS[index]}#{' ' * padding }\n"
-    result << start_end
+    first_last_line = "#{" " * padding }#{LETTERS[index]}#{" " * padding }\n"
+    result << first_last_line
 
     (width - 2).times do |_|
       reverse ? index -= 1 : index += 1
       current_letter = LETTERS[index]
       reverse ? padding += 1 : padding -= 1
-      result << "#{' ' * padding}#{current_letter}#{' ' * inner_padding}#{current_letter}#{' ' * padding }\n"
+      result << "#{" " * padding}#{current_letter}#{" " * inner_padding}#{current_letter}#{" " * padding }\n"
       reverse = true if index == given_letter_index
       reverse ? inner_padding -= 2 : inner_padding += 2
     end
 
-    result << start_end
+    result << first_last_line
   end
 
   def self.find_width(letter)

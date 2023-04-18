@@ -7,7 +7,7 @@ class DiamondTest < Minitest::Test
     assert_equal "A\n", answer
   end
 
-  def test_letter_b``
+  def test_letter_b
     answer = Diamond.make_diamond('B')
     assert_equal " A \nB B\n A \n", answer
   end
