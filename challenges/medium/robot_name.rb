@@ -34,15 +34,12 @@
 # I missed the same name collisions as it appears this is supposed to carry
 # between all instances, which is the perfect use of a class variable!
 
-require 'pry'
-require 'pry-byebug'
-
 class Robot
   attr_reader :name
 
   @@used_names = []
 
-  LETTER = ('A'..'Z').to_a
+  LETTER = ("A".."Z").to_a
   NUMBER = (0..9).to_a.map(&:to_s)
 
   def initialize
