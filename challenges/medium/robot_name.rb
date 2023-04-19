@@ -61,6 +61,7 @@ class Robot
   end
 
   def reset
+    @@used_names.delete(@name)
     @name = assign_name
   end
 end
