@@ -32,7 +32,6 @@ class ClockTest < Minitest::Test
   end
 
   def test_subtracting_does_not_mutate
-    skip
     old_clock = Clock.at(10)
     new_clock = old_clock - 50
     refute_same new_clock, old_clock
@@ -45,7 +44,6 @@ class ClockTest < Minitest::Test
   end
 
   def test_wrap_around_at_midnight
-    skip
     clock = Clock.at(23, 30) + 60
     assert_equal '00:30', clock.to_s
   end

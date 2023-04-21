@@ -50,9 +50,17 @@ class Clock
   end
 
   def +(additional_mins)
-    total_minutes = time_to_minutes + additional_mins
-    new_hours, new_mins = minutes_to_time(total_minutes)
-    Clock.new(new_hours, new_mins)
+    change_time(additional_mins) do |new_minutes|
+      total_minutes = time_to_minutes + new_minutes
+      total_minutes.divmod(60)
+    end
+  end
+
+  def -(additional_mins)
+    change_time(additional_mins) do |new_minutes|
+      total_minutes = time_to_minutes - new_minutes
+      total_minutes.divmod(60)
+    end
   end
 
   def minutes_to_time(total)
@@ -61,6 +69,17 @@ class Clock
 
   def time_to_minutes
     (@hours * 60) + @min
+  end
+
+  def change_time(minutes)
+    total_minutes = time_to_minutes + minutes
+    new_hours, new_mins = yield(minutes)
+    new_hours = validate_hours(new_hours)
+    Clock.new(new_hours, new_mins)
+  end
+
+  def validate_hours(hours)
+    hours > 23 ? hours % 24 : hours
   end
 end
 
