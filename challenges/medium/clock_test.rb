@@ -11,18 +11,15 @@ class ClockTest < Minitest::Test
   end
 
   def test_past_the_hour
-    skip
     assert_equal '11:09', Clock.at(11, 9).to_s
   end
 
   def test_add_a_few_minutes
-    skip
     clock = Clock.at(10) + 3
     assert_equal '10:03', clock.to_s
   end
 
   def test_adding_does_not_mutate
-    skip
     old_clock = Clock.at(10)
     new_clock = old_clock + 3
     refute_same new_clock, old_clock

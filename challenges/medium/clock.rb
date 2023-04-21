@@ -48,8 +48,26 @@ class Clock
   def to_s
     "%02d:%02d" % [@hours, @min]
   end
+
+  def +(additional_mins)
+    total_minutes = time_to_minutes + additional_mins
+    new_hours, new_mins = minutes_to_time(total_minutes)
+    Clock.new(new_hours, new_mins)
+  end
+
+  def minutes_to_time(total)
+    total.divmod(60)
+  end
+
+  def time_to_minutes
+    (@hours * 60) + @min
+  end
 end
 
-clock = Clock.at(8)
+clock = Clock.at(7, 30)
 
 puts clock
+puts clock.time_to_minutes
+test = clock + 60
+
+puts test
