@@ -34,6 +34,18 @@
 # write a to_s function to format :DONE
 
 # then we tackle adding and subtracting.
+# Addition
+# Appropriately add the minutes :DONE
+# Wrap if it goes over 23 :DONE
+# Returns a new object :DONE
+
+# Subtraction
+# appropriately subtracts from both minutes AND hours :DONE
+# handles the wrap around in reverse :DONE
+# returns a new object:DONE
+
+# Equivalence
+# implement == funciton that uses to_s to compare :DONE
 
 class Clock
   def self.at(hours, minutes=0)
@@ -56,11 +68,22 @@ class Clock
     end
   end
 
-  def -(additional_mins)
-    change_time(additional_mins) do |new_minutes|
+  def -(subtracted_mins)
+    change_time(subtracted_mins) do |new_minutes|
       total_minutes = time_to_minutes - new_minutes
+      total_minutes = adjust_negative(total_minutes) if total_minutes < 0
       total_minutes.divmod(60)
     end
+  end
+
+  def ==(other_clock)
+    to_s == other_clock.to_s
+  end
+
+  private
+
+  def adjust_negative(mins)
+    (mins < -1440) ? (mins % 1440) : (1440 + mins)
   end
 
   def minutes_to_time(total)
@@ -72,21 +95,12 @@ class Clock
   end
 
   def change_time(minutes)
-    total_minutes = time_to_minutes + minutes
     new_hours, new_mins = yield(minutes)
     new_hours = validate_hours(new_hours)
     Clock.new(new_hours, new_mins)
   end
 
   def validate_hours(hours)
-    hours > 23 ? hours % 24 : hours
+    (hours > 23) ? (hours % 24) : hours
   end
 end
-
-clock = Clock.at(7, 30)
-
-puts clock
-puts clock.time_to_minutes
-test = clock + 60
-
-puts test
