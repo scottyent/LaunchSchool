@@ -48,6 +48,9 @@
 # implement == funciton that uses to_s to compare :DONE
 
 class Clock
+  MINUTES_HOUR = 60
+  MINUTES_DAY = 1440
+
   def self.at(hours, minutes=0)
     Clock.new(hours, minutes)
   end
@@ -64,7 +67,7 @@ class Clock
   def +(additional_mins)
     change_time(additional_mins) do |new_minutes|
       total_minutes = time_to_minutes + new_minutes
-      total_minutes.divmod(60)
+      total_minutes.divmod(MINUTES_HOUR)
     end
   end
 
@@ -72,7 +75,7 @@ class Clock
     change_time(subtracted_mins) do |new_minutes|
       total_minutes = time_to_minutes - new_minutes
       total_minutes = adjust_negative(total_minutes) if total_minutes < 0
-      total_minutes.divmod(60)
+      total_minutes.divmod(MINUTES_HOUR)
     end
   end
 
@@ -83,15 +86,15 @@ class Clock
   private
 
   def adjust_negative(mins)
-    (mins < -1440) ? (mins % 1440) : (1440 + mins)
+    (mins <= -MINUTES_DAY) ? (mins % MINUTES_DAY) : (MINUTES_DAY + mins)
   end
 
   def minutes_to_time(total)
-    total.divmod(60)
+    total.divmod(MINUTES_HOUR)
   end
 
   def time_to_minutes
-    (@hours * 60) + @min
+    (@hours * MINUTES_HOUR) + @min
   end
 
   def change_time(minutes)
@@ -101,6 +104,6 @@ class Clock
   end
 
   def validate_hours(hours)
-    (hours > 23) ? (hours % 24) : hours
+    (hours > 23) ? (hours % MINUTES_HOUR) : hours
   end
 end
