@@ -47,11 +47,15 @@
 # Equivalence
 # implement == funciton that uses to_s to compare :DONE
 
+require 'pry'
+require 'pry-byebug'
+
 class Clock
   MINUTES_HOUR = 60
   MINUTES_DAY = 1440
+  HOURS_DAY = 24
 
-  def self.at(hours, minutes=0)
+  def self.at(hours, minutes = 0)
     Clock.new(hours, minutes)
   end
 
@@ -99,11 +103,11 @@ class Clock
 
   def change_time(minutes)
     new_hours, new_mins = yield(minutes)
-    new_hours = validate_hours(new_hours)
+    new_hours = validate_hours(new_hours) # This isn't coming back with 0 hours, validate hours is failing and I'm not sure why
     Clock.new(new_hours, new_mins)
   end
 
   def validate_hours(hours)
-    (hours > 23) ? (hours % MINUTES_HOUR) : hours
+    (hours > 23) ? (hours % HOURS_DAY) : hours
   end
 end
