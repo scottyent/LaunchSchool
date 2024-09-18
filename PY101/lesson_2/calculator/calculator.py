@@ -2,21 +2,43 @@
 # Perform the operation on the two numbers.
 # Display the result to the user.
 
+def prompt(text):
+    print(f'==> {text}')
+
 print('Welcome to the calculator!')
 
 # Ask the user for the first number.
-num1 = int(input('What is the first number?\n'))
+num1_not_set = True
+while num1_not_set:
+    prompt('What is the first number?')
+    num1 = input()
+    try:
+        num1 = int(num1)
+        num1_not_set = False
+    except ValueError:
+        prompt('Error: We only accept integers in this calculator! Try again.')
+
 
 # Ask the user for the second number.
-num2 = int(input('What is the second number?\n'))
+prompt('What is the second number?')
+num2 = int(input())
 
-print(f'Great! We\'ll be performing an operation with {num1} and {num2}')
+prompt(f'Great! We\'ll be performing an operation with {num1} and {num2}')
 
-# operation = input('What operation would you like to perform?\n 1) Add 2) Subtract 3) Multiply 4) Divide')
-operation = input(
-    'What operation would you like to perform?\n'
-    '1) Add 2) Subtract 3) Multiply 4) Divide\n'
-)
+# Ask what operation
+invalid_operation = True
+
+while invalid_operation:
+    prompt("""What operation would you like to perform?
+
+        1) Add 2) Subtract 3) Multiply 4) Divide"""
+    )
+    operation = input()
+
+    if operation in ['1', '2', '3', '4']:
+        invalid_operation = False
+    else:
+        prompt('Whoopsies! That is not a valid operation. Try again.')
 
 match operation:
     case '1':
@@ -28,6 +50,6 @@ match operation:
     case '4':
         result = num1 / num2
     case _:
-        print("You didn't choose an appropriate operation!")
+        prompt("You didn't choose an appropriate operation!")
 
-print(f'The result is: {result}')
+prompt(f'The result is: {result}')
