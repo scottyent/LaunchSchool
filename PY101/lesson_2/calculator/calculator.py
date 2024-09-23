@@ -5,40 +5,48 @@
 def prompt(text):
     print(f'==> {text}')
 
+def valid_number(str_int):
+    try:
+        int_result = int(str_int)
+        return int_result, True
+    except ValueError:
+        prompt('Error: We only accept integers in this calculator! Try again.')
+        return str_int, False
+
+def invalid_operation(operation_str):
+    return not operation_str in ['1', '2', '3', '4']
+
 print('Welcome to the calculator!')
 
 # Ask the user for the first number.
-num1_not_set = True
+num1_not_set = True # pylint: disable-msg=C0103
 while num1_not_set:
     prompt('What is the first number?')
     num1 = input()
-    try:
-        num1 = int(num1)
-        num1_not_set = False
-    except ValueError:
-        prompt('Error: We only accept integers in this calculator! Try again.')
-
+    num1, is_valid = valid_number(num1)
+    if is_valid:
+        num1_not_set = False # pylint: disable-msg=C0103
 
 # Ask the user for the second number.
-prompt('What is the second number?')
-num2 = int(input())
+num2_not_set = True # pylint: disable-msg=C0103
+while num2_not_set:
+    prompt('What is the second number?')
+    num2 = input()
+    num2, is_valid = valid_number(num2)
+    if is_valid:
+        num2_not_set = False # pylint: disable-msg=C0103
 
 prompt(f'Great! We\'ll be performing an operation with {num1} and {num2}')
 
 # Ask what operation
-invalid_operation = True
-
-while invalid_operation:
-    prompt("""What operation would you like to perform?
-
-        1) Add 2) Subtract 3) Multiply 4) Divide"""
+prompt("""What operation would you like to perform?
+    1) Add 2) Subtract 3) Multiply 4) Divide"""
     )
-    operation = input()
+operation = input()
 
-    if operation in ['1', '2', '3', '4']:
-        invalid_operation = False
-    else:
-        prompt('Whoopsies! That is not a valid operation. Try again.')
+while invalid_operation(operation):
+    prompt('Whoopsies! That is not a valid operation. Try again.')
+    operation = input()
 
 match operation:
     case '1':
