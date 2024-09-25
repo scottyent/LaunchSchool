@@ -1,3 +1,5 @@
+from calculator_messaging import messages
+
 def prompt(text):
     print(f'==> {text}')
 
@@ -6,23 +8,23 @@ def valid_number(str_int):
         int_result = int(str_int)
         return int_result, True
     except ValueError:
-        prompt('Error: We only accept integers in this calculator! Try again.')
+        prompt(messages['invalid_integer'])
         return str_int, False
 
 def invalid_operation(operation_str):
     return not operation_str in ['1', '2', '3', '4']
 
 def calculate_again():
-    prompt('Do you want to perform another calculation? y/n')
+    prompt(messages['continue?'])
     answer = input().casefold()
 
     while answer not in ['y', 'n']:
-        prompt('That is not a valid response.')
+        prompt(messages['invalid_response'])
         answer = input()
 
     return True if answer == 'y' else False
 
-print('Welcome to the calculator!')
+print(messages['greeting'])
 
 continue_calculating = True
 
@@ -30,7 +32,7 @@ while continue_calculating:
     # Ask the user for the first number.
     num1_not_set = True # pylint: disable-msg=C0103
     while num1_not_set:
-        prompt('What is the first number?')
+        prompt(messages['ask_first_number'])
         num1 = input()
         num1, is_valid = valid_number(num1)
         if is_valid:
@@ -39,22 +41,20 @@ while continue_calculating:
     # Ask the user for the second number.
     num2_not_set = True # pylint: disable-msg=C0103
     while num2_not_set:
-        prompt('What is the second number?')
+        prompt(messages['ask_second_number'])
         num2 = input()
         num2, is_valid = valid_number(num2)
         if is_valid:
             num2_not_set = False # pylint: disable-msg=C0103
 
-    prompt(f'Great! We\'ll be performing an operation with {num1} and {num2}')
+    prompt(messages['confirm_numbers'].format(num1, num2))
 
     # Ask what operation
-    prompt("""What operation would you like to perform?
-        1) Add 2) Subtract 3) Multiply 4) Divide"""
-        )
+    prompt(messages['operation'])
     operation = input()
 
     while invalid_operation(operation):
-        prompt('Whoopsies! That is not a valid operation. Try again.')
+        prompt(messages['invalid_operation'])
         operation = input()
 
     match operation:
@@ -66,11 +66,10 @@ while continue_calculating:
             result = num1 * num2
         case '4':
             result = num1 / num2
-        case _:
-            prompt("You didn't choose an appropriate operation!")
 
-    prompt(f'The result is: {result}')
+
+    prompt(messages['result'].format(result))
 
     if not calculate_again():
-        prompt("Thanks for using the calculator. Goodbye!")
+        prompt(messages['goodbye'])
         continue_calculating = False
