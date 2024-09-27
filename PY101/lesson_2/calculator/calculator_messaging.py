@@ -1,8 +1,10 @@
-messages = {
+MESSAGES = {
     'greeting'         : 'Welcome to the calculator!',
     'continue?'        : 'Do you want to perform another calculation? y/n',
     'operation'        : """What operation would you like to perform?
     1) Add 2) Subtract 3) Multiply 4) Divide""",
+    'ask_language'     : 'What language would you like to use? (in English)',
+    'language_format'  : 'Examples: English, German, Italian, Japanese, etc.',
     'confirm_numbers'  : ('Great! We\'ll be performing an operation with '
                         '{} and {}'),
     'invalid_operation': 'Whoopsies! That is not a valid operation. Try again.',
