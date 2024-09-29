@@ -4,13 +4,13 @@ from deep_translator import GoogleTranslator
 def prompt(text):
     print(f'==> {text}')
 
-def valid_number(str_int):
+def valid_number(str_float):
     try:
-        int_result = int(str_int)
-        return int_result, True
+        float_result = float(str_float)
+        return float_result, True
     except ValueError:
-        prompt(translated_messages['invalid_integer'])
-        return str_int, False
+        prompt(translated_messages['invalid_number'])
+        return str_float, False
 
 def invalid_operation(operation_str):
     return not operation_str in ['1', '2', '3', '4']

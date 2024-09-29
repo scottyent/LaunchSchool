@@ -9,13 +9,13 @@ MESSAGES = {
     'confirm_numbers'  : ('Great! We\'ll be performing an operation with '
                         '{} and {}'),
     'invalid_operation': 'Whoopsies! That is not a valid operation. Try again.',
-    'invalid_integer'  : ('Error: We only accept integers in this calculator! '
+    'invalid_number'  : ('Error: We only accept numbers in this calculator! '
                         'Try again.'),
     'invalid_response' : 'That is not a valid response.',
     'ask_first_number' : 'What is the first number?',
     'ask_second_number': 'What is the second number?',
     'goodbye'          : 'Thanks for using the calculator. Goodbye!',
-    'result'           : 'The result is: {}',
+    'result'           : 'The result is: {:.2f}',
     'translating'      : 'Thanks! Just a moment while we translate for you...',
     'play_again'       : 'yes no',
 }
