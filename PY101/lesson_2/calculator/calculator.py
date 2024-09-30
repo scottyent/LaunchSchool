@@ -1,5 +1,5 @@
-from calculator_messaging import MESSAGES
 from deep_translator import GoogleTranslator
+from calculator_messaging import MESSAGES
 
 def prompt(text):
     print(f'==> {text}')
@@ -26,12 +26,14 @@ def calculate_again():
         prompt(translated_messages['invalid_response'])
         answer = input()
 
-    return True if answer == affirmative_first_letter else False
+    return (answer == affirmative_first_letter)
 
 def convert_all_messages(messages_dict, language):
     translated_result = {}
     for title, content in messages_dict.items():
-        translated_result[title] = GoogleTranslator(source='english', target=language).translate(text=content)
+        translated_result[title] = \
+            GoogleTranslator(source='english',\
+                              target=language).translate(text=content)
 
     return translated_result
 
@@ -50,7 +52,7 @@ prompt(MESSAGES['translating'])
 
 translated_messages = convert_all_messages(MESSAGES, target_language)
 
-continue_calculating = True
+continue_calculating = True # pylint: disable-msg=C0103
 
 while continue_calculating:
     # Ask the user for the first number.
@@ -96,4 +98,4 @@ while continue_calculating:
 
     if not calculate_again():
         prompt(translated_messages['goodbye'])
-        continue_calculating = False
+        continue_calculating = False # pylint: disable-msg=C0103
