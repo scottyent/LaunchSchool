@@ -5,14 +5,20 @@ VALID_CHOICES = ['rock', 'paper', 'scissors']
 def prompt(message):
     print(f'==>{message}')
 
-def display_winner(player, computer):
-    if ((player == 'rock' and computer == 'scissors') or
+def user_wins(player, computer):
+    return ((player == 'rock' and computer == 'scissors') or
         (player == 'paper' and computer == 'rock') or
-        (player == ' scissors' and computer == 'paper')):
-        prompt('You win!')
-    elif ((player == 'rock' and computer == 'paper') or
+        (player == ' scissors' and computer == 'paper'))
+
+def computer_wins(player, computer):
+    return ((player == 'rock' and computer == 'paper') or
         (player == 'paper' and computer == 'scissors') or
-        (player == 'scissors' and computer == 'rock')):
+        (player == 'scissors' and computer == 'rock'))
+
+def display_winner(player, computer):
+    if user_wins(player, computer):
+        prompt('You win!')
+    elif computer_wins(player, computer):
         prompt('Computer wins.')
     else:
         prompt('It\'s a tie!')
