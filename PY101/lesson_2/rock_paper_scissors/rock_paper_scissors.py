@@ -27,15 +27,41 @@ def display_winner(player, computer):
     else:
         prompt('It\'s a tie!')
 
+def ask_spock_or_scissors():
+    prompt('You only entered one s. Did you mean Spock or Scissors?')
+    answer = input().casefold()
+
+    while not (answer.startswith('sp') or answer.startswith('sc')):
+        prompt("I'm sorry, that's not a valid choice")
+        answer = input().casefold()
+
+    return answer
+
+def match_choice(player_choice):
+
+    # Handle empty strings
+    if not player_choice:
+        return player_choice
+
+    # Handle single character s choice
+    if player_choice.startswith('s') and len(player_choice) == 1:
+        player_choice = ask_spock_or_scissors()
+
+    for move in VALID_CHOICES:
+        if move.startswith(player_choice):
+            return move
+
+    return "Failed to match"
+
 prompt(f'Welcome to the {', '.join(VALID_CHOICES)} game!')
 
 while True:
     prompt(f'Choose one: {', '.join(VALID_CHOICES)}')
-    choice = input().casefold()
+    choice = match_choice(input().casefold())
 
     while choice not in VALID_CHOICES:
         prompt(f'Please choose from {', '.join(VALID_CHOICES)}')
-        choice = input()
+        choice = match_choice(input().casefold())
 
     computer_choice = random.choice(VALID_CHOICES)
     prompt(f'Your pick: {choice} |  Computer pick: {computer_choice}')
