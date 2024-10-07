@@ -84,8 +84,8 @@ def match_choice(player_choice):
 def welcome_to_game():
     display_separator()
     prompt(f'Welcome to the {', '.join(VALID_CHOICES)} game!')
-    prompt(f'If you choose to continue playing, the first to {GAMES_NEEDED_TO_WIN}'
-        ' games wins the championship.')
+    prompt(f'If you choose to continue playing, the first to'
+        f' {GAMES_NEEDED_TO_WIN} games wins the championship.')
     prompt('Good luck!')
     display_separator()
 
