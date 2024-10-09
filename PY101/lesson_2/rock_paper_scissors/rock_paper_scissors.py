@@ -1,8 +1,10 @@
 import random
+import os
+from time import sleep
 
 VALID_CHOICES = ['rock', 'paper', 'scissors', 'spock', 'lizard']
 TOTAL_GAMES = 5
-GAMES_NEEDED_TO_WIN = (TOTAL_GAMES//2 + 1)
+GAMES_NEEDED_TO_WIN = (TOTAL_GAMES//2) + 1
 
 BEATS = {
     'rock'    : ['scissors', 'lizard'],
@@ -17,6 +19,10 @@ def prompt(message):
 
 def display_separator():
     print('---------------')
+
+def clear_screen(time):
+    sleep(time)
+    os.system('clear')
 
 def user_wins(player, computer):
     return computer in BEATS[player]
@@ -38,6 +44,9 @@ def display_scoreboard(current_scoreboard):
     display_separator()
 
 def display_winner(player, computer):
+    prompt(f'Your pick: {player} |  Computer pick: {computer}')
+    sleep(1)
+
     if user_wins(player, computer):
         prompt('You win!')
     elif computer_wins(player, computer):
@@ -50,9 +59,15 @@ def display_champion(current_scoreboard):
     prompt('Game over!')
     display_scoreboard(current_scoreboard)
 
-    for player, score in current_scoreboard.items():
-        if score == GAMES_NEEDED_TO_WIN:
-            prompt(f'{player} won {GAMES_NEEDED_TO_WIN} games '
+    player_score = current_scoreboard['Player']
+    computer_score = current_scoreboard['Computer']
+
+    sleep(1)
+    if player_score == GAMES_NEEDED_TO_WIN:
+        prompt(f'You won {GAMES_NEEDED_TO_WIN} games '
+                   'and are the champion! \U0001F389')
+    elif computer_score == GAMES_NEEDED_TO_WIN:
+        prompt(f'The computer won {GAMES_NEEDED_TO_WIN} games '
                    'and is the champion! \U0001F389')
 
 def ask_spock_or_scissors():
@@ -66,7 +81,6 @@ def ask_spock_or_scissors():
     return answer
 
 def match_choice(player_choice):
-
     # Handle empty strings
     if not player_choice:
         return player_choice
@@ -84,47 +98,66 @@ def match_choice(player_choice):
 def welcome_to_game():
     display_separator()
     prompt(f'Welcome to the {', '.join(VALID_CHOICES)} game!')
-    prompt(f'If you choose to continue playing, the first to'
+    prompt(f'If you choose to continue playing, the first to win'
         f' {GAMES_NEEDED_TO_WIN} games wins the championship.')
     prompt('Good luck!')
     display_separator()
+    clear_screen(4)
 
-welcome_to_game()
-
-scoreboard = {
-    'Player'  : 0,
-    'Computer': 0,
-}
-
-while True:
-    prompt(f'Choose one: {', '.join(VALID_CHOICES)}')
-    choice = match_choice(input().casefold())
-
-    while choice not in VALID_CHOICES:
-        prompt(f'Please choose from {', '.join(VALID_CHOICES)}')
-        choice = match_choice(input().casefold())
-
-    computer_choice = random.choice(VALID_CHOICES)
-    prompt(f'Your pick: {choice} |  Computer pick: {computer_choice}')
-
-    display_winner(choice, computer_choice)
-    update_scoreboard(choice, computer_choice, scoreboard)
-
-    if GAMES_NEEDED_TO_WIN in scoreboard.values():
-        break
-
-    display_scoreboard(scoreboard)
-
+def play_again_choice():
     prompt('Do you want to play again? y/n')
     play_again = input().casefold()
 
     while True:
-        if play_again.startswith('n') or play_again.startswith('y'):
-            break
+        if play_again != '':
+            if play_again in 'yes' or play_again in 'no':
+                break
         prompt('Pick either "y" or "n"')
         play_again = input().casefold()
 
-    if play_again[0] == 'n':
-        break
+    return play_again
 
-display_champion(scoreboard)
+def player_chooses_move():
+    clear_screen(1)
+    prompt(f'Choose one: {', '.join(VALID_CHOICES)}')
+
+    answer = match_choice(input().casefold())
+
+    while answer not in VALID_CHOICES:
+        prompt(f'Please choose from {', '.join(VALID_CHOICES)}')
+        answer = match_choice(input().casefold())
+
+    return answer
+
+def computer_chooses_move():
+    return random.choice(VALID_CHOICES)
+
+def play_game():
+    scoreboard = {
+        'Player'  : 0,
+        'Computer': 0,
+    }
+
+    welcome_to_game()
+
+    while True:
+        choice = player_chooses_move()
+        computer_choice = computer_chooses_move()
+
+        display_winner(choice, computer_choice)
+        update_scoreboard(choice, computer_choice, scoreboard)
+        clear_screen(2)
+
+        if GAMES_NEEDED_TO_WIN in scoreboard.values():
+            break
+
+        display_scoreboard(scoreboard)
+
+        continue_playing = play_again_choice()
+
+        if 'n' in continue_playing:
+            break
+
+    display_champion(scoreboard)
+
+play_game()
